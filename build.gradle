@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.139'
+    id 'net.neoforged.moddev' version '2.0.120'
     id 'idea'
 }
 
@@ -18,7 +18,17 @@ version = mod_version
 group = mod_group_id
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    // Core NeoForged maven for NeoForge itself and many mods.
+    maven {
+        name = 'NeoForged'
+        url = 'https://maven.neoforged.net/releases'
+    }
+
+    // Additional repositories needed for Cobblemon and its Kotlin dependencies,
+    // following the pattern used by Mega_Showdown.
+    mavenCentral()
+    maven { url 'https://maven.impactdev.net/repository/development/' } // Cobblemon
+    maven { url 'https://thedarkcolour.github.io/KotlinForForge/' }     // KotlinForForge
 }
 
 base {
@@ -112,6 +122,11 @@ configurations {
 }
 
 dependencies {
+    // Pull Cobblemon NeoForge from Maven.
+    implementation "com.cobblemon:neoforge:${project.cobblemon_version}"
+    // KotlinForForge provides the Kotlin stdlib and runtime on NeoForge, as used by Mega_Showdown.
+    implementation "thedarkcolour:kotlinforforge-neoforge:${project.kotlin_neo_version}"
+
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
@@ -147,6 +162,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description
     ]
     inputs.properties replaceProperties
     expand replaceProperties
