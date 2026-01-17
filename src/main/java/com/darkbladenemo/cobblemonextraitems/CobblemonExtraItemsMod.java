@@ -27,6 +27,12 @@ public class CobblemonExtraItemsMod {
             event.accept(ModItems.HIGH_IRON.get());
             event.accept(ModItems.HIGH_CALCIUM.get());
             event.accept(ModItems.HIGH_ZINC.get());
+            event.accept(ModItems.HIGH_HEALTH_CANDY.get());
+            event.accept(ModItems.HIGH_MIGHTY_CANDY.get());
+            event.accept(ModItems.HIGH_TOUGH_CANDY.get());
+            event.accept(ModItems.HIGH_SMART_CANDY.get());
+            event.accept(ModItems.HIGH_COURAGE_CANDY.get());
+            event.accept(ModItems.HIGH_QUICK_CANDY.get());
         }
     }
 }
