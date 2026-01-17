@@ -1,0 +1,10 @@
+{
+  "item.cobblemonextraitems.high_carbos": "High Carbos",
+  "item.cobblemonextraitems.high_protein": "High Protein",
+  "item.cobblemonextraitems.high_hp_up": "High HP Up",
+  "item.cobblemonextraitems.high_iron": "High Iron",
+  "item.cobblemonextraitems.high_calcium": "High Calcium",
+  "item.cobblemonextraitems.high_zinc": "High Zinc",
+  "item.cobblemonextraitems.high_carbos.tooltip": "Gives 100 Speed EVs",
+  "item.cobblemonextraitems.high_protein.tooltip": "Gives 100 Attack EVs"
+}

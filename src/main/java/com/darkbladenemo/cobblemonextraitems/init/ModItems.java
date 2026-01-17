@@ -5,7 +5,6 @@ import com.darkbladenemo.cobblemonextraitems.item.HighEVItem;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
-
 import java.util.function.Supplier;
 
 public class ModItems {
