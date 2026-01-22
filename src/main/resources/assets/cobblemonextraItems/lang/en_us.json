@@ -13,6 +13,64 @@
   "item.cobblemonextraitems.high_courage_candy": "High Courage Candy",
   "item.cobblemonextraitems.high_quick_candy": "High Quick Candy",
 
-  "tooltip.cobblemonextraitems.ev_item": "Raises the Pokémon's §a%s EVs§7 by §a%s",
-  "tooltip.cobblemonextraitems.iv_item": "Raises the Pokémon's effective §a%s IV§7 stat by §a%s"
+  "tooltip.cobblemonextraitems.ev_item": "Raises the Pokémon's §a%s EVs by §a%s",
+  "tooltip.cobblemonextraitems.iv_item": "Raises the Pokémon's effective §a%s IV stat by §a%s",
+
+  "item.cobblemonextraitems.shiny_charm": "Shiny Charm",
+  "item.cobblemonextraitems.shiny_charm.tooltip": "§7Increases the chance of finding shiny Pokémon when equipped",
+  "tooltip.cobblemonextraitems.shiny_boost": "§a%sx shiny chance",
+
+  "item.cobblemonextraitems.normal_charm": "Normal Charm",
+  "item.cobblemonextraitems.normal_charm.tooltip": "§7Increases Normal-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.fire_charm": "Fire Charm",
+  "item.cobblemonextraitems.fire_charm.tooltip": "§7Increases Fire-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.water_charm": "Water Charm",
+  "item.cobblemonextraitems.water_charm.tooltip": "§7Increases Water-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.electric_charm": "Electric Charm",
+  "item.cobblemonextraitems.electric_charm.tooltip": "§7Increases Electric-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.grass_charm": "Grass Charm",
+  "item.cobblemonextraitems.grass_charm.tooltip": "§7Increases Grass-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.ice_charm": "Ice Charm",
+  "item.cobblemonextraitems.ice_charm.tooltip": "§7Increases Ice-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.fighting_charm": "Fighting Charm",
+  "item.cobblemonextraitems.fighting_charm.tooltip": "§7Increases Fighting-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.poison_charm": "Poison Charm",
+  "item.cobblemonextraitems.poison_charm.tooltip": "§7Increases Poison-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.ground_charm": "Ground Charm",
+  "item.cobblemonextraitems.ground_charm.tooltip": "§7Increases Ground-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.flying_charm": "Flying Charm",
+  "item.cobblemonextraitems.flying_charm.tooltip": "§7Increases Flying-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.psychic_charm": "Psychic Charm",
+  "item.cobblemonextraitems.psychic_charm.tooltip": "§7Increases Psychic-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.bug_charm": "Bug Charm",
+  "item.cobblemonextraitems.bug_charm.tooltip": "§7Increases Bug-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.rock_charm": "Rock Charm",
+  "item.cobblemonextraitems.rock_charm.tooltip": "§7Increases Rock-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.ghost_charm": "Ghost Charm",
+  "item.cobblemonextraitems.ghost_charm.tooltip": "§7Increases Ghost-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.dragon_charm": "Dragon Charm",
+  "item.cobblemonextraitems.dragon_charm.tooltip": "§7Increases Dragon-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.dark_charm": "Dark Charm",
+  "item.cobblemonextraitems.dark_charm.tooltip": "§7Increases Dark-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.steel_charm": "Steel Charm",
+  "item.cobblemonextraitems.steel_charm.tooltip": "§7Increases Steel-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.fairy_charm": "Fairy Charm",
+  "item.cobblemonextraitems.fairy_charm.tooltip": "§7Increases Fairy-type Pokémon spawns by §a%sx§7 when equipped"
 }

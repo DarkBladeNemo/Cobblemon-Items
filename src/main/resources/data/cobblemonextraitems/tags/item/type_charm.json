@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "cobblemonextraitems:bug_charm",
+    "cobblemonextraitems:dark_charm",
+    "cobblemonextraitems:dragon_charm",
+    "cobblemonextraitems:electric_charm",
+    "cobblemonextraitems:fighting_charm",
+    "cobblemonextraitems:fire_charm",
+    "cobblemonextraitems:flying_charm",
+    "cobblemonextraitems:ghost_charm",
+    "cobblemonextraitems:grass_charm",
+    "cobblemonextraitems:ground_charm",
+    "cobblemonextraitems:ice_charm",
+    "cobblemonextraitems:normal_charm",
+    "cobblemonextraitems:poison_charm",
+    "cobblemonextraitems:psychic_charm",
+    "cobblemonextraitems:rock_charm",
+    "cobblemonextraitems:steel_charm",
+    "cobblemonextraitems:water_charm"
+  ]
+}

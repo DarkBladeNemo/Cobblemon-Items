@@ -1,0 +1,9 @@
+{
+  "type": "iv_booster",
+  "stats": ["HP"],
+  "amount": 10,
+  "valid_range": {
+    "min": 0,
+    "max": 31
+  }
+}

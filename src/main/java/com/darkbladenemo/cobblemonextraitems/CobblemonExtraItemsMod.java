@@ -1,6 +1,9 @@
 package com.darkbladenemo.cobblemonextraitems;
 
+import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.darkbladenemo.cobblemonextraitems.config.Config;
+import com.darkbladenemo.cobblemonextraitems.event.CharmEvents;
+import com.darkbladenemo.cobblemonextraitems.influence.TypeCharmInfluence;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
@@ -21,6 +24,12 @@ public class CobblemonExtraItemsMod {
         // Register items
         ModItems.ITEMS.register(modEventBus);
 
+        // Register events
+        CharmEvents.register();
+
+        // Register type charm influence
+        PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(TypeCharmInfluence::new);
+
         // Register a creative tab addition
         modEventBus.addListener(this::addCreative);
     }
@@ -40,6 +49,25 @@ public class CobblemonExtraItemsMod {
             if (Config.ENABLE_HIGH_SMART_CANDY.get()) event.accept(ModItems.HIGH_SMART_CANDY.get());
             if (Config.ENABLE_HIGH_COURAGE_CANDY.get()) event.accept(ModItems.HIGH_COURAGE_CANDY.get());
             if (Config.ENABLE_HIGH_QUICK_CANDY.get()) event.accept(ModItems.HIGH_QUICK_CANDY.get());
+            if (Config.ENABLE_SHINY_CHARM.get()) event.accept(ModItems.SHINY_CHARM.get());
+            if (Config.ENABLE_BUG_CHARM.get()) event.accept(ModItems.BUG_CHARM.get());
+            if (Config.ENABLE_DARK_CHARM.get()) event.accept(ModItems.DARK_CHARM.get());
+            if (Config.ENABLE_DRAGON_CHARM.get()) event.accept(ModItems.DRAGON_CHARM.get());
+            if (Config.ENABLE_ELECTRIC_CHARM.get()) event.accept(ModItems.ELECTRIC_CHARM.get());
+            if (Config.ENABLE_FAIRY_CHARM.get()) event.accept(ModItems.FAIRY_CHARM.get());
+            if (Config.ENABLE_FIGHTING_CHARM.get()) event.accept(ModItems.FIGHTING_CHARM.get());
+            if (Config.ENABLE_FIRE_CHARM.get()) event.accept(ModItems.FIRE_CHARM.get());
+            if (Config.ENABLE_FLYING_CHARM.get()) event.accept(ModItems.FLYING_CHARM.get());
+            if (Config.ENABLE_GHOST_CHARM.get()) event.accept(ModItems.GHOST_CHARM.get());
+            if (Config.ENABLE_GRASS_CHARM.get()) event.accept(ModItems.GRASS_CHARM.get());
+            if (Config.ENABLE_GROUND_CHARM.get()) event.accept(ModItems.GROUND_CHARM.get());
+            if (Config.ENABLE_ICE_CHARM.get()) event.accept(ModItems.ICE_CHARM.get());
+            if (Config.ENABLE_NORMAL_CHARM.get()) event.accept(ModItems.NORMAL_CHARM.get());
+            if (Config.ENABLE_POISON_CHARM.get()) event.accept(ModItems.POISON_CHARM.get());
+            if (Config.ENABLE_PSYCHIC_CHARM.get()) event.accept(ModItems.PSYCHIC_CHARM.get());
+            if (Config.ENABLE_ROCK_CHARM.get()) event.accept(ModItems.ROCK_CHARM.get());
+            if (Config.ENABLE_STEEL_CHARM.get()) event.accept(ModItems.STEEL_CHARM.get());
+            if (Config.ENABLE_WATER_CHARM.get()) event.accept(ModItems.WATER_CHARM.get());
         }
     }
 }

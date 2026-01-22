@@ -1,0 +1,5 @@
+{
+  "type": "ev_booster",
+  "stats": ["SPEED"],
+  "amount": 100
+}

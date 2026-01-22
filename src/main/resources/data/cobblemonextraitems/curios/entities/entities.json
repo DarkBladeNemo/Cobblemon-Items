@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "entities": [
+    "minecraft:player"
+  ],
+  "slots": [
+    "shiny_charm_slot",
+    "type_charm_slot"
+  ]
+}
