@@ -30,6 +30,12 @@ repositories {
     mavenCentral()
     maven { url 'https://maven.impactdev.net/repository/development/' } // Cobblemon
     maven { url 'https://thedarkcolour.github.io/KotlinForForge/' }     // KotlinForForge
+
+    // Curios maven
+    maven {
+        name = "Curios"
+        url = uri("https://maven.theillusivec4.top/")
+    }
 }
 
 base {
@@ -128,6 +134,10 @@ dependencies {
     // KotlinForForge provides the Kotlin stdlib and runtime on NeoForge, as used by Mega_Showdown.
     implementation "thedarkcolour:kotlinforforge-neoforge:${project.kotlin_neo_version}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // Curios API for NeoForge
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
