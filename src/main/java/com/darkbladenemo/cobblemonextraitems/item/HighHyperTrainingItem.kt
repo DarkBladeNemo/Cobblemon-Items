@@ -3,35 +3,37 @@ package com.darkbladenemo.cobblemonextraitems.item
 import com.cobblemon.mod.common.CobblemonSounds
 import com.cobblemon.mod.common.api.item.PokemonSelectingItem
 import com.cobblemon.mod.common.api.pokemon.stats.Stat
+import com.cobblemon.mod.common.api.pokemon.stats.Stats
 import com.cobblemon.mod.common.item.CobblemonItem
 import com.cobblemon.mod.common.pokemon.IVs
 import com.cobblemon.mod.common.pokemon.Pokemon
+import com.darkbladenemo.cobblemonextraitems.config.Config
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 
 class HighHyperTrainingItem(
-    val ivIncreaseAmount: Int,
-    val targetStats: Set<Stat>,
-    val validRange: IntRange
+    val targetStats: Set<Stat>
 ) : CobblemonItem(Properties()), PokemonSelectingItem {
 
     override val bagItem = null
 
-    // Helper to ensure prospective IVs are within the valid range
+    // Get config value at runtime
+    private val ivIncreaseAmount: Int
+        get() = Config.HIGH_IV_INCREASE_AMOUNT.get()
+
     private fun canChangeIV(stat: Stat, pokemon: Pokemon): Boolean {
         val effectiveIV = pokemon.ivs.getEffectiveBattleIV(stat)
-        return effectiveIV in validRange && effectiveIV + ivIncreaseAmount in 0..IVs.MAX_VALUE
+        // Can always use if not already at max
+        return effectiveIV < IVs.MAX_VALUE
     }
 
     override fun canUseOnPokemon(stack: ItemStack, pokemon: Pokemon): Boolean {
-        // Check if at least one stat's effective IV can be modified
         return targetStats.any { stat -> canChangeIV(stat, pokemon) }
     }
 
@@ -43,11 +45,13 @@ class HighHyperTrainingItem(
         if(!canUseOnPokemon(stack, pokemon)) {
             return InteractionResultHolder.fail(stack)
         }
-        // Modify the effective IVs for the target stats
+
         targetStats.forEach { stat ->
             if (canChangeIV(stat, pokemon)) {
                 val effectiveIV = pokemon.ivs.getEffectiveBattleIV(stat)
-                pokemon.hyperTrainIV(stat, effectiveIV + ivIncreaseAmount)
+                // Clamp the value to max IV (31)
+                val newIV = (effectiveIV + ivIncreaseAmount).coerceAtMost(IVs.MAX_VALUE)
+                pokemon.hyperTrainIV(stat, newIV)
             }
         }
 
@@ -63,16 +67,25 @@ class HighHyperTrainingItem(
         return InteractionResultHolder.success(user.getItemInHand(hand))
     }
 
-    // ADD THIS FOR TOOLTIPS:
     override fun appendHoverText(
         stack: ItemStack,
-        context: Item.TooltipContext,
+        context: TooltipContext,
         tooltipComponents: MutableList<Component>,
         tooltipFlag: TooltipFlag
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
 
-        val tooltipKey = "${stack.item.descriptionId}.tooltip"
-        tooltipComponents.add(Component.translatable(tooltipKey))
+        val statName = when(targetStats.firstOrNull()) {
+            Stats.HP -> "HP"
+            Stats.ATTACK -> "Attack"
+            Stats.DEFENCE -> "Defence"
+            Stats.SPECIAL_ATTACK -> "Special Attack"
+            Stats.SPECIAL_DEFENCE -> "Special Defence"
+            Stats.SPEED -> "Speed"
+            else -> "IV"
+        }
+
+        tooltipComponents.add(Component.translatable("tooltip.cobblemonextraitems.iv_item",
+            statName, ivIncreaseAmount))
     }
 }

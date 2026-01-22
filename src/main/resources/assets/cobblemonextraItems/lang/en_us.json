@@ -1,37 +1,18 @@
 {
   "item.cobblemonextraitems.high_carbos": "High Carbos",
-  "item.cobblemonextraitems.high_carbos.tooltip": "Raises the Pokémon's Speed EVs by 100",
-
   "item.cobblemonextraitems.high_protein": "High Protein",
-  "item.cobblemonextraitems.high_protein.tooltip": "Raises the Pokémon's Attack EVs by 100",
-
   "item.cobblemonextraitems.high_hp_up": "High HP Up",
-  "item.cobblemonextraitems.high_hp_up.tooltip": "Raises the Pokémon's HP EVs by 100",
-
   "item.cobblemonextraitems.high_iron": "High Iron",
-  "item.cobblemonextraitems.high_iron.tooltip": "Raises the Pokémon's Defense EVs by 100",
-
   "item.cobblemonextraitems.high_calcium": "High Calcium",
-  "item.cobblemonextraitems.high_calcium.tooltip": "Raises the Pokémon's Sp. Atk EVs by 100",
-
   "item.cobblemonextraitems.high_zinc": "High Zinc",
-  "item.cobblemonextraitems.high_zinc.tooltip": "Raises the Pokémon's Sp. Defense EVs by 100",
 
   "item.cobblemonextraitems.high_health_candy": "High Health Candy",
-  "item.cobblemonextraitems.high_health_candy.tooltip": "Raises the Pokémon's HP IVs by 10",
-
   "item.cobblemonextraitems.high_mighty_candy": "High Mighty Candy",
-  "item.cobblemonextraitems.high_mighty_candy.tooltip": "Raises the Pokémon's Attack IVs by 10",
-
   "item.cobblemonextraitems.high_tough_candy": "High Tough Candy",
-  "item.cobblemonextraitems.high_tough_candy.tooltip": "Raises the Pokémon's Defense IVs by 10",
-
   "item.cobblemonextraitems.high_smart_candy": "High Smart Candy",
-  "item.cobblemonextraitems.high_smart_candy.tooltip": "Raises the Pokémon's Sp. Atk IVs by 10",
-
   "item.cobblemonextraitems.high_courage_candy": "High Courage Candy",
-  "item.cobblemonextraitems.high_courage_candy.tooltip": "Raises the Pokémon's Sp. Def IVs by 10",
-
   "item.cobblemonextraitems.high_quick_candy": "High Quick Candy",
-  "item.cobblemonextraitems.high_quick_candy.tooltip": "Raises the Pokémon's Speed IVs by 10"
+
+  "tooltip.cobblemonextraitems.ev_item": "Raises the Pokémon's §a%s EVs§7 by §a%s",
+  "tooltip.cobblemonextraitems.iv_item": "Raises the Pokémon's effective §a%s IV§7 stat by §a%s"
 }
