@@ -15,6 +15,13 @@ class TypeCharm(
         .rarity(Rarity.UNCOMMON)
 ) : Item(properties), ICurioItem {
 
+    constructor(type: CharmType) : this(
+        type,
+        Properties()
+            .stacksTo(1)
+            .rarity(Rarity.UNCOMMON)
+    )
+
     override fun appendHoverText(
         stack: ItemStack,
         context: TooltipContext,
@@ -36,8 +43,6 @@ class TypeCharm(
         tooltipComponents.add(Component.literal("§7Radius: §a${radius.toInt()} blocks"))
     }
 
-    // Optional: Override getName to make the display name dynamic
-    override fun getName(stack: ItemStack): Component {
-        return Component.translatable("item.cobblemonextraitems.${type.translationKey}_charm")
-    }
+    override fun getName(stack: ItemStack): Component =
+        Component.translatable("item.cobblemonextraitems.${type.translationKey}_charm")
 }

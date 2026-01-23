@@ -6,14 +6,22 @@ import com.darkbladenemo.cobblemonextraitems.item.HighEVItem;
 import com.darkbladenemo.cobblemonextraitems.item.HighHyperTrainingItem;
 import com.darkbladenemo.cobblemonextraitems.item.charm.*;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.createItems(CobblemonExtraItemsMod.MOD_ID);
+
+    // Map to store type charms
+    public static final Map<CharmType, DeferredHolder<Item, TypeCharm>> TYPE_CHARMS =
+            new EnumMap<>(CharmType.class);
+
 
     // EV Items - always 100 EVs (not configurable)
     public static final Supplier<Item> HIGH_CARBOS = ITEMS.register("high_carbos",
@@ -57,57 +65,20 @@ public class ModItems {
     public static final Supplier<Item> SHINY_CHARM = ITEMS.register("shiny_charm",
             () -> new ShinyCharm());
 
-    public static final Supplier<Item> BUG_CHARM = ITEMS.register("bug_charm",
-            () -> new BugCharm());
+    // Static initializer block to register type charms
+    static {
+        // Register all type charms
+        for (CharmType type : CharmType.values()) {
+            String name = type.getTranslationKey() + "_charm";
+            DeferredHolder<Item, TypeCharm> charm = ITEMS.register(name,
+                    () -> new TypeCharm(type));
+            TYPE_CHARMS.put(type, charm);
+        }
+    }
 
-    public static final Supplier<Item> DARK_CHARM = ITEMS.register("dark_charm",
-            () -> new DarkCharm());
-
-    public static final Supplier<Item> DRAGON_CHARM = ITEMS.register("dragon_charm",
-            () -> new DragonCharm());
-
-    public static final Supplier<Item> ELECTRIC_CHARM = ITEMS.register("electric_charm",
-            () -> new ElectricCharm());
-
-    public static final Supplier<Item> FAIRY_CHARM = ITEMS.register("fairy_charm",
-            () -> new FairyCharm());
-
-    public static final Supplier<Item> FIGHTING_CHARM = ITEMS.register("fighting_charm",
-            () -> new FightingCharm());
-
-    public static final Supplier<Item> FIRE_CHARM = ITEMS.register("fire_charm",
-            () -> new FireCharm());
-
-    public static final Supplier<Item> FLYING_CHARM = ITEMS.register("flying_charm",
-            () -> new FlyingCharm());
-
-    public static final Supplier<Item> GHOST_CHARM = ITEMS.register("ghost_charm",
-            () -> new GhostCharm());
-
-    public static final Supplier<Item> GRASS_CHARM = ITEMS.register("grass_charm",
-            () -> new GrassCharm());
-
-    public static final Supplier<Item> GROUND_CHARM = ITEMS.register("ground_charm",
-            () -> new GroundCharm());
-
-    public static final Supplier<Item> ICE_CHARM = ITEMS.register("ice_charm",
-            () -> new IceCharm());
-
-    public static final Supplier<Item> NORMAL_CHARM = ITEMS.register("normal_charm",
-            () -> new NormalCharm());
-
-    public static final Supplier<Item> POISON_CHARM = ITEMS.register("poison_charm",
-            () -> new PoisonCharm());
-
-    public static final Supplier<Item> PSYCHIC_CHARM = ITEMS.register("psychic_charm",
-            () -> new PsychicCharm());
-
-    public static final Supplier<Item> ROCK_CHARM = ITEMS.register("rock_charm",
-            () -> new RockCharm());
-
-    public static final Supplier<Item> STEEL_CHARM = ITEMS.register("steel_charm",
-            () -> new SteelCharm());
-
-    public static final Supplier<Item> WATER_CHARM = ITEMS.register("water_charm",
-            () -> new WaterCharm());
+    // Helper method to get a type charm
+    public static TypeCharm getTypeCharm(CharmType type) {
+        DeferredHolder<Item, TypeCharm> deferred = TYPE_CHARMS.get(type);
+        return deferred != null ? deferred.get() : null;
+    }
 }

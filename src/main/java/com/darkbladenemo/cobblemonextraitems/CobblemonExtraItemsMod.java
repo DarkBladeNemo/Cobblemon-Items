@@ -5,12 +5,18 @@ import com.darkbladenemo.cobblemonextraitems.config.Config;
 import com.darkbladenemo.cobblemonextraitems.event.CharmEvents;
 import com.darkbladenemo.cobblemonextraitems.influence.TypeCharmInfluence;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
+import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
+import com.darkbladenemo.cobblemonextraitems.item.charm.TypeCharm;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import java.util.Map;
 
 @Mod(CobblemonExtraItemsMod.MOD_ID)
 public class CobblemonExtraItemsMod {
@@ -36,7 +42,8 @@ public class CobblemonExtraItemsMod {
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            // Check config at runtime before adding to the creative tab
+
+            // Add EV & HyperTraining items as before
             if (Config.ENABLE_HIGH_CARBOS.get()) event.accept(ModItems.HIGH_CARBOS.get());
             if (Config.ENABLE_HIGH_PROTEIN.get()) event.accept(ModItems.HIGH_PROTEIN.get());
             if (Config.ENABLE_HIGH_HP_UP.get()) event.accept(ModItems.HIGH_HP_UP.get());
@@ -50,24 +57,37 @@ public class CobblemonExtraItemsMod {
             if (Config.ENABLE_HIGH_COURAGE_CANDY.get()) event.accept(ModItems.HIGH_COURAGE_CANDY.get());
             if (Config.ENABLE_HIGH_QUICK_CANDY.get()) event.accept(ModItems.HIGH_QUICK_CANDY.get());
             if (Config.ENABLE_SHINY_CHARM.get()) event.accept(ModItems.SHINY_CHARM.get());
-            if (Config.ENABLE_BUG_CHARM.get()) event.accept(ModItems.BUG_CHARM.get());
-            if (Config.ENABLE_DARK_CHARM.get()) event.accept(ModItems.DARK_CHARM.get());
-            if (Config.ENABLE_DRAGON_CHARM.get()) event.accept(ModItems.DRAGON_CHARM.get());
-            if (Config.ENABLE_ELECTRIC_CHARM.get()) event.accept(ModItems.ELECTRIC_CHARM.get());
-            if (Config.ENABLE_FAIRY_CHARM.get()) event.accept(ModItems.FAIRY_CHARM.get());
-            if (Config.ENABLE_FIGHTING_CHARM.get()) event.accept(ModItems.FIGHTING_CHARM.get());
-            if (Config.ENABLE_FIRE_CHARM.get()) event.accept(ModItems.FIRE_CHARM.get());
-            if (Config.ENABLE_FLYING_CHARM.get()) event.accept(ModItems.FLYING_CHARM.get());
-            if (Config.ENABLE_GHOST_CHARM.get()) event.accept(ModItems.GHOST_CHARM.get());
-            if (Config.ENABLE_GRASS_CHARM.get()) event.accept(ModItems.GRASS_CHARM.get());
-            if (Config.ENABLE_GROUND_CHARM.get()) event.accept(ModItems.GROUND_CHARM.get());
-            if (Config.ENABLE_ICE_CHARM.get()) event.accept(ModItems.ICE_CHARM.get());
-            if (Config.ENABLE_NORMAL_CHARM.get()) event.accept(ModItems.NORMAL_CHARM.get());
-            if (Config.ENABLE_POISON_CHARM.get()) event.accept(ModItems.POISON_CHARM.get());
-            if (Config.ENABLE_PSYCHIC_CHARM.get()) event.accept(ModItems.PSYCHIC_CHARM.get());
-            if (Config.ENABLE_ROCK_CHARM.get()) event.accept(ModItems.ROCK_CHARM.get());
-            if (Config.ENABLE_STEEL_CHARM.get()) event.accept(ModItems.STEEL_CHARM.get());
-            if (Config.ENABLE_WATER_CHARM.get()) event.accept(ModItems.WATER_CHARM.get());
+
+            // Dynamically add all type charms based on config flags
+            for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry : ModItems.TYPE_CHARMS.entrySet()) {
+                CharmType type = entry.getKey();
+                DeferredHolder<Item, TypeCharm> charm = entry.getValue();
+
+                boolean enabled = switch (type) {
+                    case NORMAL -> Config.ENABLE_NORMAL_CHARM.get();
+                    case FIRE -> Config.ENABLE_FIRE_CHARM.get();
+                    case WATER -> Config.ENABLE_WATER_CHARM.get();
+                    case ELECTRIC -> Config.ENABLE_ELECTRIC_CHARM.get();
+                    case GRASS -> Config.ENABLE_GRASS_CHARM.get();
+                    case ICE -> Config.ENABLE_ICE_CHARM.get();
+                    case FIGHTING -> Config.ENABLE_FIGHTING_CHARM.get();
+                    case POISON -> Config.ENABLE_POISON_CHARM.get();
+                    case GROUND -> Config.ENABLE_GROUND_CHARM.get();
+                    case FLYING -> Config.ENABLE_FLYING_CHARM.get();
+                    case PSYCHIC -> Config.ENABLE_PSYCHIC_CHARM.get();
+                    case BUG -> Config.ENABLE_BUG_CHARM.get();
+                    case ROCK -> Config.ENABLE_ROCK_CHARM.get();
+                    case GHOST -> Config.ENABLE_GHOST_CHARM.get();
+                    case DRAGON -> Config.ENABLE_DRAGON_CHARM.get();
+                    case DARK -> Config.ENABLE_DARK_CHARM.get();
+                    case STEEL -> Config.ENABLE_STEEL_CHARM.get();
+                    case FAIRY -> Config.ENABLE_FAIRY_CHARM.get();
+                };
+
+                if (enabled) {
+                    event.accept(charm.get());
+                }
+            }
         }
     }
 }

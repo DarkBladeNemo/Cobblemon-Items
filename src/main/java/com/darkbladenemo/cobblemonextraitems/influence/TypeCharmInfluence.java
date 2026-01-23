@@ -12,12 +12,16 @@ import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.darkbladenemo.cobblemonextraitems.config.Config;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
+import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
+import com.darkbladenemo.cobblemonextraitems.item.charm.TypeCharm;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 
@@ -100,22 +104,22 @@ public class TypeCharmInfluence implements SpawningInfluence {
         Map<String, Integer> typeBoosts = new HashMap<>();
 
         CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-            // Check all slots that might contain charms
+            // Slots that might contain charms
             String[] charmSlots = {"charm", "ring", "necklace", "type_charm_slot"};
 
             for (String slot : charmSlots) {
                 for (SlotResult slotResult : inventory.findCurios(slot)) {
                     ItemStack stack = slotResult.stack();
 
-                    // Check for each type charm
-                    if (stack.is(ModItems.FIRE_CHARM.get())) {
-                        typeBoosts.merge("fire", 1, Integer::sum);
-                    } else if (stack.is(ModItems.WATER_CHARM.get())) {
-                        typeBoosts.merge("water", 1, Integer::sum);
-                    } else if (stack.is(ModItems.GRASS_CHARM.get())) {
-                        typeBoosts.merge("grass", 1, Integer::sum);
+                    // Loop through all type charms in ModItems
+                    for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry : ModItems.TYPE_CHARMS.entrySet()) {
+                        CharmType type = entry.getKey();
+                        TypeCharm charmItem = entry.getValue().get();
+
+                        if (stack.is(charmItem)) {
+                            typeBoosts.merge(type.getTranslationKey(), 1, Integer::sum);
+                        }
                     }
-                    // Add checks for all 18 types...
                 }
             }
         });
