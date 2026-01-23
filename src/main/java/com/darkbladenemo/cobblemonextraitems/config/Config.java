@@ -45,6 +45,8 @@ public class Config {
     public static final ModConfigSpec.BooleanValue ENABLE_ROCK_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_STEEL_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_WATER_CHARM;
+    public static final ModConfigSpec.DoubleValue EXP_CHARM_MULTIPLIER;
+    public static final ModConfigSpec.BooleanValue ENABLE_EXP_CHARM;
 
     static {
         BUILDER.push("High IV Items Configuration");
@@ -113,8 +115,16 @@ public class Config {
         ENABLE_STEEL_CHARM = BUILDER.define("enable_steel_charm", true);
         ENABLE_WATER_CHARM = BUILDER.define("enable_water_charm", true);
 
+        BUILDER.pop();
 
+        BUILDER.push("Experience Charm Configuration");
+        EXP_CHARM_MULTIPLIER = BUILDER
+                .comment("Experience multiplier when EXP Charm is equipped (default: 1.5 = 50% more EXP)")
+                .defineInRange("exp_charm_multiplier", 1.5, 1.0, 10.0);
 
+        ENABLE_EXP_CHARM = BUILDER
+                .comment("Enable EXP Charm item")
+                .define("enable_exp_charm", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

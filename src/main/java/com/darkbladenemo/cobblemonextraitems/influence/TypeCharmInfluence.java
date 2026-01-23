@@ -7,15 +7,12 @@ import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.api.spawning.influence.SpawningInfluence;
 import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
 import com.cobblemon.mod.common.api.spawning.position.calculators.SpawnablePositionCalculator;
-import com.cobblemon.mod.common.api.types.ElementalType;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
-import com.cobblemon.mod.common.pokemon.Species;
 import com.darkbladenemo.cobblemonextraitems.config.Config;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
 import com.darkbladenemo.cobblemonextraitems.item.charm.TypeCharm;
+import com.darkbladenemo.cobblemonextraitems.util.CobblemonExtraItemsUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -31,6 +28,9 @@ import java.util.Map;
 public class TypeCharmInfluence implements SpawningInfluence {
 
     private final ServerPlayer player;
+    // Add caching for performance
+    private Map<String, Integer> cachedCharms;
+    private long lastCacheTime = 0;
 
     public TypeCharmInfluence(ServerPlayer player) {
         this.player = player;
@@ -51,35 +51,26 @@ public class TypeCharmInfluence implements SpawningInfluence {
             return weight;
         }
 
-        // Get player's equipped type charms
-        Map<String, Integer> typeBoosts = getPlayerTypeCharms();
+        // Get player's equipped type charms (with caching)
+        Map<String, Integer> typeBoosts = getCachedPlayerTypeCharms();
         if (typeBoosts.isEmpty()) {
             return weight;
         }
 
-        // Get Pokémon species using CobbleCuisine's pattern
-        Species species = resolveSpecies(pokemonDetail);
+        // Get Pokémon species using utility method
+        com.cobblemon.mod.common.pokemon.Species species =
+                CobblemonExtraItemsUtils.resolveSpecies(pokemonDetail);
         if (species == null) return weight;
-
-        ElementalType primary = species.getPrimaryType();
-        ElementalType secondary = species.getSecondaryType();
 
         float newWeight = weight;
 
         // Apply boosts for each type the player has charms for
         for (Map.Entry<String, Integer> entry : typeBoosts.entrySet()) {
             String charmTypeName = entry.getKey();
-            int boostLevel = entry.getValue(); // How many charms of this type
+            int boostLevel = entry.getValue();
 
-            // Check if this Pokémon has the type
-            boolean matches = false;
-            if (primary != null && primary.getName().equalsIgnoreCase(charmTypeName)) {
-                matches = true;
-            } else if (secondary != null && secondary.getName().equalsIgnoreCase(charmTypeName)) {
-                matches = true;
-            }
-
-            if (matches) {
+            // Check if this Pokémon has the type using the utility method
+            if (CobblemonExtraItemsUtils.speciesHasType(species, charmTypeName)) {
                 // Apply multiplier based on config and boost level
                 float baseMultiplier = Config.TYPE_CHARM_MULTIPLIER.get().floatValue();
                 float totalMultiplier = 1.0f + ((baseMultiplier - 1.0f) * boostLevel);
@@ -90,35 +81,32 @@ public class TypeCharmInfluence implements SpawningInfluence {
         return newWeight;
     }
 
-    // Copy CobbleCuisine's resolveSpecies method exactly
-    private Species resolveSpecies(PokemonSpawnDetail p) {
-        String species = p.getPokemon().getSpecies();
-        return species == null ? null : PokemonSpecies.INSTANCE.getByIdentifier(
-                species.indexOf(':') >= 0 ?
-                        ResourceLocation.parse(species) :
-                        ResourceLocation.fromNamespaceAndPath("cobblemon", species)
-        );
+    private Map<String, Integer> getCachedPlayerTypeCharms() {
+        // Cache for 1 second to reduce Curios API calls
+        long currentTime = System.currentTimeMillis();
+        if (cachedCharms == null || currentTime - lastCacheTime > 1000) {
+            cachedCharms = calculatePlayerTypeCharms();
+            lastCacheTime = currentTime;
+        }
+        return cachedCharms;
     }
 
-    private Map<String, Integer> getPlayerTypeCharms() {
+    private Map<String, Integer> calculatePlayerTypeCharms() {
         Map<String, Integer> typeBoosts = new HashMap<>();
 
         CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-            // Slots that might contain charms
-            String[] charmSlots = {"charm", "ring", "necklace", "type_charm_slot"};
+            // Only check the dedicated type charm slot
+            for (SlotResult slotResult : inventory.findCurios("type_charm_slot")) {
+                ItemStack stack = slotResult.stack();
 
-            for (String slot : charmSlots) {
-                for (SlotResult slotResult : inventory.findCurios(slot)) {
-                    ItemStack stack = slotResult.stack();
+                // Loop through all type charms in ModItems
+                for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry :
+                        ModItems.TYPE_CHARMS.entrySet()) {
+                    CharmType type = entry.getKey();
+                    TypeCharm charmItem = entry.getValue().get();
 
-                    // Loop through all type charms in ModItems
-                    for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry : ModItems.TYPE_CHARMS.entrySet()) {
-                        CharmType type = entry.getKey();
-                        TypeCharm charmItem = entry.getValue().get();
-
-                        if (stack.is(charmItem)) {
-                            typeBoosts.merge(type.getTranslationKey(), 1, Integer::sum);
-                        }
+                    if (stack.is(charmItem)) {
+                        typeBoosts.merge(type.getTranslationKey(), 1, Integer::sum);
                     }
                 }
             }
@@ -127,33 +115,20 @@ public class TypeCharmInfluence implements SpawningInfluence {
         return typeBoosts;
     }
 
-    // Other required methods from SpawningInfluence interface
+    // Other required methods remain the same...
     @Override
-    public boolean isExpired() {
-        return false;
-    }
-
+    public boolean isExpired() { return false; }
     @Override
-    public void affectAction(SpawnAction<?> action) {
-        // Optional: modify spawn action
-    }
-
+    public void affectAction(SpawnAction<?> action) { }
     @Override
-    public void affectSpawn(SpawnAction<?> action, Entity entity) {
-        // Optional: modify spawned entity
-    }
-
+    public void affectSpawn(SpawnAction<?> action, Entity entity) { }
     @Override
-    public void affectBucketWeights(Map<SpawnBucket, Float> bucketWeights) {
-        // Optional: modify bucket weights
-    }
-
+    public void affectBucketWeights(Map<SpawnBucket, Float> bucketWeights) { }
     @Override
     public boolean isAllowedPosition(ServerLevel world, BlockPos pos,
                                      SpawnablePositionCalculator<?, ?> calculator) {
         return true;
     }
-
     @Override
     public boolean affectSpawnable(SpawnDetail detail, SpawnablePosition position) {
         return true;

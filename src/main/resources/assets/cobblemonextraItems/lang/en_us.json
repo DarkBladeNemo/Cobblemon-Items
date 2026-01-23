@@ -72,5 +72,9 @@
   "item.cobblemonextraitems.steel_charm.tooltip": "§7Increases Steel-type Pokémon spawns by §a%sx§7 when equipped",
 
   "item.cobblemonextraitems.fairy_charm": "Fairy Charm",
-  "item.cobblemonextraitems.fairy_charm.tooltip": "§7Increases Fairy-type Pokémon spawns by §a%sx§7 when equipped"
+  "item.cobblemonextraitems.fairy_charm.tooltip": "§7Increases Fairy-type Pokémon spawns by §a%sx§7 when equipped",
+
+  "item.cobblemonextraitems.exp_charm": "EXP Charm",
+  "item.cobblemonextraitems.exp_charm.tooltip": "Increases experience gained by Pokémon",
+  "tooltip.cobblemonextraitems.exp_boost": "§7Experience: §a+%s%%§r"
 }

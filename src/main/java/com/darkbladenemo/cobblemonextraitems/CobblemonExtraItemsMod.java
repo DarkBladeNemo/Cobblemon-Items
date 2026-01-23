@@ -3,6 +3,7 @@ package com.darkbladenemo.cobblemonextraitems;
 import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.darkbladenemo.cobblemonextraitems.config.Config;
 import com.darkbladenemo.cobblemonextraitems.event.CharmEvents;
+import com.darkbladenemo.cobblemonextraitems.event.ExpCharmEvents;
 import com.darkbladenemo.cobblemonextraitems.influence.TypeCharmInfluence;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
@@ -32,6 +33,7 @@ public class CobblemonExtraItemsMod {
 
         // Register events
         CharmEvents.register();
+        ExpCharmEvents.register();
 
         // Register type charm influence
         PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(TypeCharmInfluence::new);
@@ -57,6 +59,7 @@ public class CobblemonExtraItemsMod {
             if (Config.ENABLE_HIGH_COURAGE_CANDY.get()) event.accept(ModItems.HIGH_COURAGE_CANDY.get());
             if (Config.ENABLE_HIGH_QUICK_CANDY.get()) event.accept(ModItems.HIGH_QUICK_CANDY.get());
             if (Config.ENABLE_SHINY_CHARM.get()) event.accept(ModItems.SHINY_CHARM.get());
+            if (Config.ENABLE_EXP_CHARM.get()) event.accept(ModItems.EXP_CHARM.get());
 
             // Dynamically add all type charms based on config flags
             for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry : ModItems.TYPE_CHARMS.entrySet()) {

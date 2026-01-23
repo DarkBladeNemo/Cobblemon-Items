@@ -1,7 +1,5 @@
 {
   "replace": false,
-  "amount": 1,
-  "operation": "set",
-  "order": 1,
+  "size": 1,
   "icon": "cobblemonextraitems:gui/slot/shiny_charm"
 }
