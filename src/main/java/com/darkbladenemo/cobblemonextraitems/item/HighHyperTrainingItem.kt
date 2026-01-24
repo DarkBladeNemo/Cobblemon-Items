@@ -42,22 +42,31 @@ class HighHyperTrainingItem(
         stack: ItemStack,
         pokemon: Pokemon
     ): InteractionResultHolder<ItemStack> {
-        if(!canUseOnPokemon(stack, pokemon)) {
+        if (!canUseOnPokemon(stack, pokemon)) {
             return InteractionResultHolder.fail(stack)
         }
 
+        var anyChanged = false
         targetStats.forEach { stat ->
             if (canChangeIV(stat, pokemon)) {
                 val effectiveIV = pokemon.ivs.getEffectiveBattleIV(stat)
-                // Clamp the value to max IV (31)
                 val newIV = (effectiveIV + ivIncreaseAmount).coerceAtMost(IVs.MAX_VALUE)
-                pokemon.hyperTrainIV(stat, newIV)
+
+                // Only apply if there's actually a change
+                if (newIV != effectiveIV) {
+                    pokemon.hyperTrainIV(stat, newIV)
+                    anyChanged = true
+                }
             }
         }
 
-        stack.consume(1, player)
-        pokemon.entity?.playSound(CobblemonSounds.MEDICINE_PILLS_USE, 1F, 1F)
-        return InteractionResultHolder.success(stack)
+        if (anyChanged) {
+            stack.consume(1, player)
+            pokemon.entity?.playSound(CobblemonSounds.MEDICINE_PILLS_USE, 1F, 1F)
+            return InteractionResultHolder.success(stack)
+        }
+
+        return InteractionResultHolder.fail(stack)
     }
 
     override fun use(world: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {

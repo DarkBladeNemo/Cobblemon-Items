@@ -4,7 +4,9 @@ import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.darkbladenemo.cobblemonextraitems.config.Config;
 import com.darkbladenemo.cobblemonextraitems.event.CharmEvents;
 import com.darkbladenemo.cobblemonextraitems.event.ExpCharmEvents;
+import com.darkbladenemo.cobblemonextraitems.event.ModEvents;
 import com.darkbladenemo.cobblemonextraitems.influence.TypeCharmInfluence;
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
 import com.darkbladenemo.cobblemonextraitems.item.charm.TypeCharm;
@@ -30,6 +32,10 @@ public class CobblemonExtraItemsMod {
 
         // Register items
         ModItems.ITEMS.register(modEventBus);
+
+        // Register components
+        ModDataComponents.DATA_COMPONENTS.register(modEventBus);
+        modEventBus.addListener(ModEvents::onModifyDefaultComponents);
 
         // Register events
         CharmEvents.register();

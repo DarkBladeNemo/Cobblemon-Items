@@ -21,9 +21,10 @@ enum class CharmType(val translationKey: String) {
     FAIRY("fairy");
 
     companion object {
-        // Helper to get from string
-        fun fromString(type: String): CharmType? {
-            return values().find { it.translationKey.equals(type, ignoreCase = true) }
+        @JvmStatic  // Add this annotation for Java interop
+        fun fromString(type: String?): CharmType? {
+            if (type == null) return null
+            return entries.find { it.translationKey.equals(type, ignoreCase = true) }
         }
     }
 }

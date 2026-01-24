@@ -1,6 +1,8 @@
 package com.darkbladenemo.cobblemonextraitems.item.charm
 
+import com.darkbladenemo.cobblemonextraitems.component.TypeCharmData
 import com.darkbladenemo.cobblemonextraitems.config.Config
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -30,8 +32,9 @@ class TypeCharm(
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
 
-        val multiplier = Config.TYPE_CHARM_MULTIPLIER.get()
-        val radius = Config.TYPE_CHARM_RADIUS.get()
+        val data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get())
+        val multiplier = data?.multiplier() ?: Config.TYPE_CHARM_MULTIPLIER.get().toFloat()
+        val radius = data?.radius() ?: Config.TYPE_CHARM_RADIUS.get()
 
         tooltipComponents.add(
             Component.translatable(

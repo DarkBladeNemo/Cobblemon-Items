@@ -76,5 +76,6 @@
 
   "item.cobblemonextraitems.exp_charm": "EXP Charm",
   "item.cobblemonextraitems.exp_charm.tooltip": "Increases experience gained by Pokémon",
-  "tooltip.cobblemonextraitems.exp_boost": "§7Experience: §a+%s%%§r"
+  "tooltip.cobblemonextraitems.exp_boost": "§7Experience: §a+%s%%§r",
+  "message.cobblemonextraitems.exp_charm_set": "EXP Charm multiplier set to §a%sx§r"
 }

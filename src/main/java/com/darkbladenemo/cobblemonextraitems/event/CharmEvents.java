@@ -3,7 +3,9 @@ package com.darkbladenemo.cobblemonextraitems.event;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
+import com.darkbladenemo.cobblemonextraitems.component.ShinyCharmData;
 import com.darkbladenemo.cobblemonextraitems.config.Config;
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -22,24 +24,37 @@ public class CharmEvents {
 
     private static void handleShinyChance(ShinyChanceCalculationEvent event) {
         event.addModificationFunction((currentRate, player, pokemon) -> {
-            float rate = currentRate; // This is the denominator (8192)
+            float rate = currentRate;
 
-            if (player != null && hasShinyCharm(player)) {
-                float multiplier = Config.SHINY_CHARM_MULTIPLIER.get().floatValue();
-                rate /= multiplier; // 8192 / 3 = 2730 (for 3x boost)
+            if (player != null) {
+                float multiplier = getShinyMultiplier(player);
+                if (multiplier > 1.0f) {
+                    rate /= multiplier;
+                }
             }
 
             return rate;
         });
     }
 
-    private static boolean hasShinyCharm(ServerPlayer player) {
-        Optional<Boolean> result = CuriosApi.getCuriosInventory(player).map(inventory ->
-                inventory.findCurios("shiny_charm_slot").stream().anyMatch(slotResult -> {
-                    ItemStack stack = slotResult.stack();
-                    return stack.is(ModItems.SHINY_CHARM.get());
-                })
-        );
-        return result.orElse(false);
+    private static float getShinyMultiplier(ServerPlayer player) {
+        final float[] multiplier = {1.0f};
+
+        CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
+            inventory.findCurios("shiny_charm_slot").forEach(slotResult -> {
+                ItemStack stack = slotResult.stack();
+                if (!stack.isEmpty() && stack.is(ModItems.SHINY_CHARM.get())) {
+                    ShinyCharmData data = stack.get(ModDataComponents.SHINY_CHARM_DATA.get());
+                    if (data != null) {
+                        multiplier[0] = data.multiplier();
+                    } else {
+                        // Fallback to config
+                        multiplier[0] = Config.SHINY_CHARM_MULTIPLIER.get().floatValue();
+                    }
+                }
+            });
+        });
+
+        return multiplier[0];
     }
 }

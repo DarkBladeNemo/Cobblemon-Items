@@ -7,7 +7,9 @@ import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.api.spawning.influence.SpawningInfluence;
 import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
 import com.cobblemon.mod.common.api.spawning.position.calculators.SpawnablePositionCalculator;
+import com.darkbladenemo.cobblemonextraitems.component.TypeCharmData;  // ADD THIS IMPORT
 import com.darkbladenemo.cobblemonextraitems.config.Config;
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;  // ADD THIS IMPORT
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
 import com.darkbladenemo.cobblemonextraitems.item.charm.TypeCharm;
@@ -28,9 +30,10 @@ import java.util.Map;
 public class TypeCharmInfluence implements SpawningInfluence {
 
     private final ServerPlayer player;
-    // Add caching for performance
-    private Map<String, Integer> cachedCharms;
+    // Change the cache type from Map<String, Integer> to Map<String, CharmInfo>
+    private Map<String, CharmInfo> cachedCharms;  // CHANGED TYPE HERE
     private long lastCacheTime = 0;
+    private static final long CACHE_DURATION_MS = 1000;
 
     public TypeCharmInfluence(ServerPlayer player) {
         this.player = player;
@@ -38,42 +41,34 @@ public class TypeCharmInfluence implements SpawningInfluence {
 
     @Override
     public float affectWeight(SpawnDetail detail, SpawnablePosition spawnablePosition, float weight) {
-        // Only affect Pokémon spawns
         if (!(detail instanceof PokemonSpawnDetail pokemonDetail)) {
             return weight;
         }
 
-        // Check distance
-        double radius = Config.TYPE_CHARM_RADIUS.get();
-        BlockPos spawnPos = spawnablePosition.getPosition();
-        double distanceSq = player.blockPosition().distSqr(spawnPos);
-        if (distanceSq > radius * radius) {
-            return weight;
-        }
-
-        // Get player's equipped type charms (with caching)
-        Map<String, Integer> typeBoosts = getCachedPlayerTypeCharms();
+        Map<String, CharmInfo> typeBoosts = getCachedPlayerTypeCharms();
         if (typeBoosts.isEmpty()) {
             return weight;
         }
 
-        // Get Pokémon species using utility method
+        BlockPos spawnPos = spawnablePosition.getPosition();
         com.cobblemon.mod.common.pokemon.Species species =
                 CobblemonExtraItemsUtils.resolveSpecies(pokemonDetail);
         if (species == null) return weight;
 
         float newWeight = weight;
 
-        // Apply boosts for each type the player has charms for
-        for (Map.Entry<String, Integer> entry : typeBoosts.entrySet()) {
+        for (Map.Entry<String, CharmInfo> entry : typeBoosts.entrySet()) {
             String charmTypeName = entry.getKey();
-            int boostLevel = entry.getValue();
+            CharmInfo info = entry.getValue();
 
-            // Check if this Pokémon has the type using the utility method
+            // Check radius from charm data
+            double distanceSq = player.blockPosition().distSqr(spawnPos);
+            if (distanceSq > info.radius * info.radius) {
+                continue;
+            }
+
             if (CobblemonExtraItemsUtils.speciesHasType(species, charmTypeName)) {
-                // Apply multiplier based on config and boost level
-                float baseMultiplier = Config.TYPE_CHARM_MULTIPLIER.get().floatValue();
-                float totalMultiplier = 1.0f + ((baseMultiplier - 1.0f) * boostLevel);
+                float totalMultiplier = 1.0f + ((info.multiplier - 1.0f) * info.count);
                 newWeight *= totalMultiplier;
             }
         }
@@ -81,41 +76,64 @@ public class TypeCharmInfluence implements SpawningInfluence {
         return newWeight;
     }
 
-    private Map<String, Integer> getCachedPlayerTypeCharms() {
-        // Cache for 1 second to reduce Curios API calls
+    private Map<String, CharmInfo> getCachedPlayerTypeCharms() {  // CHANGED RETURN TYPE HERE
         long currentTime = System.currentTimeMillis();
-        if (cachedCharms == null || currentTime - lastCacheTime > 1000) {
+        if (cachedCharms == null || currentTime - lastCacheTime > CACHE_DURATION_MS) {
             cachedCharms = calculatePlayerTypeCharms();
             lastCacheTime = currentTime;
         }
         return cachedCharms;
     }
 
-    private Map<String, Integer> calculatePlayerTypeCharms() {
-        Map<String, Integer> typeBoosts = new HashMap<>();
+    private Map<String, CharmInfo> calculatePlayerTypeCharms() {
+        Map<String, CharmInfo> typeBoosts = new HashMap<>();
 
         CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-            // Only check the dedicated type charm slot
-            for (SlotResult slotResult : inventory.findCurios("type_charm_slot")) {
+            inventory.findCurios("type_charm_slot").forEach(slotResult -> {
                 ItemStack stack = slotResult.stack();
 
-                // Loop through all type charms in ModItems
-                for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry :
-                        ModItems.TYPE_CHARMS.entrySet()) {
-                    CharmType type = entry.getKey();
-                    TypeCharm charmItem = entry.getValue().get();
+                ModItems.TYPE_CHARMS.forEach((type, deferredCharm) -> {
+                    if (stack.is(deferredCharm.get())) {
+                        TypeCharmData data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get());
 
-                    if (stack.is(charmItem)) {
-                        typeBoosts.merge(type.getTranslationKey(), 1, Integer::sum);
+                        float multiplier = data != null
+                                ? data.multiplier()
+                                : Config.TYPE_CHARM_MULTIPLIER.get().floatValue();
+
+                        double radius = data != null
+                                ? data.radius()
+                                : Config.TYPE_CHARM_RADIUS.get();
+
+                        String typeName = type.getTranslationKey();
+                        typeBoosts.merge(
+                                typeName,
+                                new CharmInfo(1, multiplier, radius),
+                                (existing, newInfo) -> new CharmInfo(
+                                        existing.count + 1,
+                                        existing.multiplier, // Use first charm's multiplier
+                                        existing.radius // Use first charm's radius
+                                )
+                        );
                     }
-                }
-            }
+                });
+            });
         });
 
         return typeBoosts;
     }
 
-    // Other required methods remain the same...
+    private static class CharmInfo {
+        final int count;
+        final float multiplier;
+        final double radius;
+
+        CharmInfo(int count, float multiplier, double radius) {
+            this.count = count;
+            this.multiplier = multiplier;
+            this.radius = radius;
+        }
+    }
+
     @Override
     public boolean isExpired() { return false; }
     @Override

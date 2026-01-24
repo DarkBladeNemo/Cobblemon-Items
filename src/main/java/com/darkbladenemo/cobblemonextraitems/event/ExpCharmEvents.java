@@ -3,7 +3,9 @@ package com.darkbladenemo.cobblemonextraitems.event;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokemon.ExperienceGainedEvent;
+import com.darkbladenemo.cobblemonextraitems.component.ExpCharmData;
 import com.darkbladenemo.cobblemonextraitems.config.Config;
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import kotlin.Unit;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,12 +23,16 @@ public class ExpCharmEvents {
 
     private static void handleExpEvent(ExperienceGainedEvent.Pre event) {
         ServerPlayer player = event.getPokemon().getOwnerPlayer();
-        if (player == null || !hasExpCharm(player)) {
+        if (player == null) {
             return;
         }
 
+        float multiplier = getExpMultiplier(player);
+        if (multiplier <= 1.0f) {
+            return; // No charm or multiplier is 1.0
+        }
+
         int originalExp = event.getExperience();
-        float multiplier = Config.EXP_CHARM_MULTIPLIER.get().floatValue();
         int newExp = (int) (originalExp * multiplier);
 
         // Ensure at least 1 EXP gain
@@ -37,13 +43,24 @@ public class ExpCharmEvents {
         event.setExperience(newExp);
     }
 
-    private static boolean hasExpCharm(ServerPlayer player) {
-        return CuriosApi.getCuriosInventory(player).map(inventory ->
-                inventory.findCurios("exp_charm_slot").stream()
-                        .anyMatch(slotResult -> {
-                            ItemStack stack = slotResult.stack();
-                            return !stack.isEmpty() && stack.is(ModItems.EXP_CHARM.get());
-                        })
-        ).orElse(false);
+    private static float getExpMultiplier(ServerPlayer player) {
+        final float[] multiplier = {1.0f};
+
+        CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
+            inventory.findCurios("exp_charm_slot").forEach(slotResult -> {
+                ItemStack stack = slotResult.stack();
+                if (!stack.isEmpty() && stack.is(ModItems.EXP_CHARM.get())) {
+                    ExpCharmData data = stack.get(ModDataComponents.EXP_CHARM_DATA.get());
+                    if (data != null) {
+                        multiplier[0] = data.multiplier();
+                    } else {
+                        // Fallback to config default if data is missing
+                        multiplier[0] = Config.EXP_CHARM_MULTIPLIER.get().floatValue();
+                    }
+                }
+            });
+        });
+
+        return multiplier[0];
     }
 }

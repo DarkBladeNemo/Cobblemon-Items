@@ -1,6 +1,8 @@
 package com.darkbladenemo.cobblemonextraitems.item.charm
 
+import com.darkbladenemo.cobblemonextraitems.component.ShinyCharmData
 import com.darkbladenemo.cobblemonextraitems.config.Config
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -21,7 +23,9 @@ class ShinyCharm : Item(Properties()
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
 
-        val multiplier = Config.SHINY_CHARM_MULTIPLIER.get()
+        val data = stack.get(ModDataComponents.SHINY_CHARM_DATA.get())
+        val multiplier = data?.multiplier() ?: Config.SHINY_CHARM_MULTIPLIER.get().toFloat()
+
         tooltipComponents.add(Component.translatable("item.cobblemonextraitems.shiny_charm.tooltip"))
         tooltipComponents.add(Component.translatable("tooltip.cobblemonextraitems.shiny_boost",
             String.format("%.1f", multiplier)))
