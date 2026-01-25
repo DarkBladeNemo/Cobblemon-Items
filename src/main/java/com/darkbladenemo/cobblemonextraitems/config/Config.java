@@ -10,6 +10,7 @@ public class Config {
     public static final ModConfigSpec.IntValue HIGH_IV_INCREASE_AMOUNT;
 
     // Enable/Disable items (optional - can remove if you always want all items)
+    public static final ModConfigSpec.IntValue HIGH_EV_INCREASE_AMOUNT;
     public static final ModConfigSpec.BooleanValue ENABLE_HIGH_CARBOS;
     public static final ModConfigSpec.BooleanValue ENABLE_HIGH_PROTEIN;
     public static final ModConfigSpec.BooleanValue ENABLE_HIGH_HP_UP;
@@ -66,6 +67,11 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.push("High EV Items Configuration");
+
+        HIGH_EV_INCREASE_AMOUNT = BUILDER
+                .comment("Amount of EVs added by high EV items (default: 100, range: 1-252)")
+                .defineInRange("high_ev_increase_amount", 100, 1, 252);
+
         ENABLE_HIGH_CARBOS = BUILDER.define("enable_high_carbos", true);
         ENABLE_HIGH_PROTEIN = BUILDER.define("enable_high_protein", true);
         ENABLE_HIGH_HP_UP = BUILDER.define("enable_high_hp_up", true);

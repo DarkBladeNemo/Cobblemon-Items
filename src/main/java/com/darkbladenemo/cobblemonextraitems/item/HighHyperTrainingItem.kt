@@ -7,7 +7,9 @@ import com.cobblemon.mod.common.api.pokemon.stats.Stats
 import com.cobblemon.mod.common.item.CobblemonItem
 import com.cobblemon.mod.common.pokemon.IVs
 import com.cobblemon.mod.common.pokemon.Pokemon
+import com.darkbladenemo.cobblemonextraitems.component.IVItemData
 import com.darkbladenemo.cobblemonextraitems.config.Config
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
@@ -23,13 +25,14 @@ class HighHyperTrainingItem(
 
     override val bagItem = null
 
-    // Get config value at runtime
-    private val ivIncreaseAmount: Int
-        get() = Config.HIGH_IV_INCREASE_AMOUNT.get()
+    // Get IV amount from data component at runtime
+    private fun getIVAmount(stack: ItemStack): Int {
+        val data = stack.get(ModDataComponents.IV_ITEM_DATA.get())
+        return data?.ivAmount() ?: Config.HIGH_IV_INCREASE_AMOUNT.get()
+    }
 
     private fun canChangeIV(stat: Stat, pokemon: Pokemon): Boolean {
         val effectiveIV = pokemon.ivs.getEffectiveBattleIV(stat)
-        // Can always use if not already at max
         return effectiveIV < IVs.MAX_VALUE
     }
 
@@ -46,13 +49,14 @@ class HighHyperTrainingItem(
             return InteractionResultHolder.fail(stack)
         }
 
+        val ivIncreaseAmount = getIVAmount(stack)
         var anyChanged = false
+
         targetStats.forEach { stat ->
             if (canChangeIV(stat, pokemon)) {
                 val effectiveIV = pokemon.ivs.getEffectiveBattleIV(stat)
                 val newIV = (effectiveIV + ivIncreaseAmount).coerceAtMost(IVs.MAX_VALUE)
 
-                // Only apply if there's actually a change
                 if (newIV != effectiveIV) {
                     pokemon.hyperTrainIV(stat, newIV)
                     anyChanged = true
@@ -84,6 +88,7 @@ class HighHyperTrainingItem(
     ) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
 
+        val ivIncreaseAmount = getIVAmount(stack)
         val statName = when(targetStats.firstOrNull()) {
             Stats.HP -> "HP"
             Stats.ATTACK -> "Attack"
