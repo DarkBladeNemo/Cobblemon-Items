@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.api.spawning.influence.SpawningInfluence;
 import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
 import com.cobblemon.mod.common.api.spawning.position.calculators.SpawnablePositionCalculator;
+import com.darkbladenemo.cobblemonextraitems.component.MultiCharmData;
 import com.darkbladenemo.cobblemonextraitems.component.TypeCharmData;  // ADD THIS IMPORT
 import com.darkbladenemo.cobblemonextraitems.config.Config;
 import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;  // ADD THIS IMPORT
@@ -89,9 +90,11 @@ public class TypeCharmInfluence implements SpawningInfluence {
         Map<String, CharmInfo> typeBoosts = new HashMap<>();
 
         CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
+            // Check type charm slot for regular type charms
             inventory.findCurios("type_charm_slot").forEach(slotResult -> {
                 ItemStack stack = slotResult.stack();
 
+                // Handle regular type charms
                 ModItems.TYPE_CHARMS.forEach((type, deferredCharm) -> {
                     if (stack.is(deferredCharm.get())) {
                         TypeCharmData data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get());
@@ -110,12 +113,31 @@ public class TypeCharmInfluence implements SpawningInfluence {
                                 new CharmInfo(1, multiplier, radius),
                                 (existing, newInfo) -> new CharmInfo(
                                         existing.count + 1,
-                                        existing.multiplier, // Use first charm's multiplier
-                                        existing.radius // Use first charm's radius
+                                        existing.multiplier,
+                                        existing.radius
                                 )
                         );
                     }
                 });
+
+                // Handle multi-charms
+                if (stack.is(ModItems.MULTI_CHARM.get())) {
+                    MultiCharmData multiData = stack.get(ModDataComponents.MULTI_CHARM_DATA.get());
+                    if (multiData != null) {
+                        multiData.getEnabledEffects().forEach((type, effect) -> {
+                            String typeName = type.getTranslationKey();
+                            typeBoosts.merge(
+                                    typeName,
+                                    new CharmInfo(1, effect.multiplier(), effect.radius()),
+                                    (existing, newInfo) -> new CharmInfo(
+                                            existing.count + 1,
+                                            existing.multiplier,
+                                            existing.radius
+                                    )
+                            );
+                        });
+                    }
+                }
             });
         });
 

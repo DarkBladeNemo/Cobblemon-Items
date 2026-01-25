@@ -8,6 +8,7 @@ import com.darkbladenemo.cobblemonextraitems.event.ModEvents;
 import com.darkbladenemo.cobblemonextraitems.influence.TypeCharmInfluence;
 import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
+import com.darkbladenemo.cobblemonextraitems.init.ModRecipes;
 import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
 import com.darkbladenemo.cobblemonextraitems.item.charm.TypeCharm;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -36,6 +37,9 @@ public class CobblemonExtraItemsMod {
         // Register components
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         modEventBus.addListener(ModEvents::onModifyDefaultComponents);
+
+        // Register recipes
+        ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
 
         // Register events
         CharmEvents.register();
@@ -66,6 +70,7 @@ public class CobblemonExtraItemsMod {
             if (Config.ENABLE_HIGH_QUICK_CANDY.get()) event.accept(ModItems.HIGH_QUICK_CANDY.get());
             if (Config.ENABLE_SHINY_CHARM.get()) event.accept(ModItems.SHINY_CHARM.get());
             if (Config.ENABLE_EXP_CHARM.get()) event.accept(ModItems.EXP_CHARM.get());
+            if (Config.ENABLE_MULTI_CHARM.get()) event.accept(ModItems.MULTI_CHARM.get());
 
             // Dynamically add all type charms based on config flags
             for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry : ModItems.TYPE_CHARMS.entrySet()) {

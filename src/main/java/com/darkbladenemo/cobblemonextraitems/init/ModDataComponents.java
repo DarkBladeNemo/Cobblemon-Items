@@ -2,6 +2,7 @@ package com.darkbladenemo.cobblemonextraitems.init;
 
 import com.darkbladenemo.cobblemonextraitems.CobblemonExtraItemsMod;
 import com.darkbladenemo.cobblemonextraitems.component.ExpCharmData;
+import com.darkbladenemo.cobblemonextraitems.component.MultiCharmData;
 import com.darkbladenemo.cobblemonextraitems.component.ShinyCharmData;
 import com.darkbladenemo.cobblemonextraitems.component.TypeCharmData;
 import net.minecraft.core.component.DataComponentType;
@@ -32,6 +33,13 @@ public class ModDataComponents {
             DATA_COMPONENTS.register("type_charm_data", () ->
                     DataComponentType.<TypeCharmData>builder()
                             .persistent(TypeCharmData.CODEC)
+                            .build()
+            );
+
+    public static final Supplier<DataComponentType<MultiCharmData>> MULTI_CHARM_DATA =
+            DATA_COMPONENTS.register("multi_charm_data", () ->
+                    DataComponentType.<MultiCharmData>builder()
+                            .persistent(MultiCharmData.CODEC)
                             .build()
             );
 }

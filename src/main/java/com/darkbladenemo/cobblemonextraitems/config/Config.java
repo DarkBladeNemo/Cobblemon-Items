@@ -47,6 +47,7 @@ public class Config {
     public static final ModConfigSpec.BooleanValue ENABLE_WATER_CHARM;
     public static final ModConfigSpec.DoubleValue EXP_CHARM_MULTIPLIER;
     public static final ModConfigSpec.BooleanValue ENABLE_EXP_CHARM;
+    public static final ModConfigSpec.BooleanValue ENABLE_MULTI_CHARM;
 
     static {
         BUILDER.push("High IV Items Configuration");
@@ -125,6 +126,10 @@ public class Config {
         ENABLE_EXP_CHARM = BUILDER
                 .comment("Enable EXP Charm item")
                 .define("enable_exp_charm", true);
+
+        ENABLE_MULTI_CHARM = BUILDER
+                .comment("Enable Multi Charm item (can combine multiple type charms)")
+                .define("enable_multi_charm", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

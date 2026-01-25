@@ -1,6 +1,7 @@
 package com.darkbladenemo.cobblemonextraitems.event
 
 import com.darkbladenemo.cobblemonextraitems.component.ExpCharmData
+import com.darkbladenemo.cobblemonextraitems.component.MultiCharmData
 import com.darkbladenemo.cobblemonextraitems.component.ShinyCharmData
 import com.darkbladenemo.cobblemonextraitems.component.TypeCharmData
 import com.darkbladenemo.cobblemonextraitems.config.Config
@@ -38,6 +39,11 @@ object ModEvents {
                     TypeCharmData(type, typeMultiplier, typeRadius)
                 )
             }
+        }
+
+        // Set default Multi charm data (empty)
+        event.modify(ModItems.MULTI_CHARM.get()) { builder ->
+            builder.set(ModDataComponents.MULTI_CHARM_DATA.get(), MultiCharmData.empty())
         }
     }
 }

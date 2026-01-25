@@ -68,6 +68,9 @@ public class ModItems {
     public static final Supplier<Item> EXP_CHARM = ITEMS.register("exp_charm",
             () -> new ExpCharm());
 
+    public static final Supplier<Item> MULTI_CHARM = ITEMS.register("multi_charm",
+            () -> new MultiCharm());
+
     // Static initializer block to register type charms
     static {
         // Register all type charms
