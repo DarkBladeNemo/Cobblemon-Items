@@ -92,5 +92,7 @@
   "key.categories.cobblemonextraitems": "Cobblemon Extra Items",
   "key.cobblemonextraitems.open_multi_charm": "Open Multi-Charm GUI",
   "gui.cobblemonextraitems.multi_charm_selection.title": "Select Multi-Charm",
-  "gui.cobblemonextraitems.multi_charm_selection.subtitle": "Choose which charm to configure:"
+  "gui.cobblemonextraitems.multi_charm_selection.subtitle": "Choose which charm to configure:",
+  "gui.cobblemonextraitems.multi_charm_selection.active_boosts": "Active Type Boosts",
+  "gui.cobblemonextraitems.multi_charm_selection.no_active": "None active"
 }
