@@ -1,10 +1,14 @@
 package com.darkbladenemo.cobblemonextraitems.network;
 
 import com.darkbladenemo.cobblemonextraitems.CobblemonExtraItemsMod;
-import com.darkbladenemo.cobblemonextraitems.component.MultiCharmData;
+import com.darkbladenemo.cobblemonextraitems.common.component.MultiCharmData;
 import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
-import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
+import com.darkbladenemo.cobblemonextraitems.common.item.charm.CharmType;
+import com.darkbladenemo.cobblemonextraitems.network.payload.OpenMultiCharmFromCurioPayload;
+import com.darkbladenemo.cobblemonextraitems.network.payload.OpenMultiCharmScreenPayload;
+import com.darkbladenemo.cobblemonextraitems.network.payload.RefreshMultiCharmScreenPayload;
+import com.darkbladenemo.cobblemonextraitems.network.payload.ToggleMultiCharmTypePayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -27,7 +31,7 @@ public class ModNetworking {
                 (payload, context) -> context.enqueueWork(() -> {
                     // Handle on client - open screen
                     net.minecraft.client.Minecraft.getInstance().setScreen(
-                            new com.darkbladenemo.cobblemonextraitems.client.screen.MultiCharmScreen(
+                            new com.darkbladenemo.cobblemonextraitems.client.gui.MultiCharmScreen(
                                     net.minecraft.client.Minecraft.getInstance().player,
                                     payload.slotIndex(),
                                     payload.fromCurio()
@@ -67,7 +71,7 @@ public class ModNetworking {
                 (payload, context) -> context.enqueueWork(() -> {
                     // Refresh the screen if it's open
                     if (net.minecraft.client.Minecraft.getInstance().screen instanceof
-                            com.darkbladenemo.cobblemonextraitems.client.screen.MultiCharmScreen screen) {
+                            com.darkbladenemo.cobblemonextraitems.client.gui.MultiCharmScreen screen) {
                         screen.refreshData(payload.data());
                     }
                 })

@@ -1,16 +1,16 @@
 package com.darkbladenemo.cobblemonextraitems;
 
 import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
-import com.darkbladenemo.cobblemonextraitems.config.Config;
-import com.darkbladenemo.cobblemonextraitems.event.CharmEvents;
-import com.darkbladenemo.cobblemonextraitems.event.ExpCharmEvents;
-import com.darkbladenemo.cobblemonextraitems.event.ModEvents;
-import com.darkbladenemo.cobblemonextraitems.influence.TypeCharmInfluence;
+import com.darkbladenemo.cobblemonextraitems.common.config.Config;
+import com.darkbladenemo.cobblemonextraitems.common.event.CharmEvents;
+import com.darkbladenemo.cobblemonextraitems.common.event.ExpCharmEvents;
+import com.darkbladenemo.cobblemonextraitems.common.event.ModEvents;
+import com.darkbladenemo.cobblemonextraitems.common.influence.TypeCharmInfluence;
 import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import com.darkbladenemo.cobblemonextraitems.init.ModRecipes;
-import com.darkbladenemo.cobblemonextraitems.item.charm.CharmType;
-import com.darkbladenemo.cobblemonextraitems.item.charm.TypeCharm;
+import com.darkbladenemo.cobblemonextraitems.common.item.charm.CharmType;
+import com.darkbladenemo.cobblemonextraitems.common.item.charm.TypeCharm;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;

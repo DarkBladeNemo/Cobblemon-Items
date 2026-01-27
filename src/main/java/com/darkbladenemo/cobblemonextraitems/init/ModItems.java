@@ -2,10 +2,9 @@ package com.darkbladenemo.cobblemonextraitems.init;
 
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.darkbladenemo.cobblemonextraitems.CobblemonExtraItemsMod;
-import com.darkbladenemo.cobblemonextraitems.item.HighEVItem;
-import com.darkbladenemo.cobblemonextraitems.item.IVBoostItem;
-import com.darkbladenemo.cobblemonextraitems.item.IVBoostItem;
-import com.darkbladenemo.cobblemonextraitems.item.charm.*;
+import com.darkbladenemo.cobblemonextraitems.common.item.HighEVItem;
+import com.darkbladenemo.cobblemonextraitems.common.item.IVBoostItem;
+import com.darkbladenemo.cobblemonextraitems.common.item.charm.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;

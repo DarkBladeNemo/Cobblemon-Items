@@ -1,7 +1,7 @@
 package com.darkbladenemo.cobblemonextraitems.init;
 
 import com.darkbladenemo.cobblemonextraitems.CobblemonExtraItemsMod;
-import com.darkbladenemo.cobblemonextraitems.component.*;
+import com.darkbladenemo.cobblemonextraitems.common.component.*;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredRegister;

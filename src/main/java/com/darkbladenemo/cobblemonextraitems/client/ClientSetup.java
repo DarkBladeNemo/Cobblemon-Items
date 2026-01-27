@@ -1,6 +1,7 @@
 package com.darkbladenemo.cobblemonextraitems.client;
 
 import com.darkbladenemo.cobblemonextraitems.CobblemonExtraItemsMod;
+import com.darkbladenemo.cobblemonextraitems.client.keybind.ModKeyBindings;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
