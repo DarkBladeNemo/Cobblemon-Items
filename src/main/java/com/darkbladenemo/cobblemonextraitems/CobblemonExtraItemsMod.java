@@ -68,6 +68,7 @@ public class CobblemonExtraItemsMod {
             if (Config.ENABLE_HIGH_SMART_CANDY.get()) event.accept(ModItems.HIGH_SMART_CANDY.get());
             if (Config.ENABLE_HIGH_COURAGE_CANDY.get()) event.accept(ModItems.HIGH_COURAGE_CANDY.get());
             if (Config.ENABLE_HIGH_QUICK_CANDY.get()) event.accept(ModItems.HIGH_QUICK_CANDY.get());
+            if (Config.ENABLE_GOLD_BOTTLE_CAP.get()) event.accept(ModItems.GOLD_BOTTLE_CAP.get());
             if (Config.ENABLE_SHINY_CHARM.get()) event.accept(ModItems.SHINY_CHARM.get());
             if (Config.ENABLE_EXP_CHARM.get()) event.accept(ModItems.EXP_CHARM.get());
             if (Config.ENABLE_MULTI_CHARM.get()) event.accept(ModItems.MULTI_CHARM.get());

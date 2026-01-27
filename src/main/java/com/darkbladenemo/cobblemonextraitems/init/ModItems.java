@@ -3,7 +3,8 @@ package com.darkbladenemo.cobblemonextraitems.init;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.darkbladenemo.cobblemonextraitems.CobblemonExtraItemsMod;
 import com.darkbladenemo.cobblemonextraitems.item.HighEVItem;
-import com.darkbladenemo.cobblemonextraitems.item.HighHyperTrainingItem;
+import com.darkbladenemo.cobblemonextraitems.item.IVBoostItem;
+import com.darkbladenemo.cobblemonextraitems.item.IVBoostItem;
 import com.darkbladenemo.cobblemonextraitems.item.charm.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -44,22 +45,32 @@ public class ModItems {
 
     // High IV items - configurable amount
     public static final Supplier<Item> HIGH_HEALTH_CANDY = ITEMS.register("high_health_candy",
-            () -> new HighHyperTrainingItem(Set.of(Stats.HP)));
+            () -> new IVBoostItem(Set.of(Stats.HP)));
 
     public static final Supplier<Item> HIGH_MIGHTY_CANDY = ITEMS.register("high_mighty_candy",
-            () -> new HighHyperTrainingItem(Set.of(Stats.ATTACK)));
+            () -> new IVBoostItem(Set.of(Stats.ATTACK)));
 
     public static final Supplier<Item> HIGH_TOUGH_CANDY = ITEMS.register("high_tough_candy",
-            () -> new HighHyperTrainingItem(Set.of(Stats.DEFENCE)));
+            () -> new IVBoostItem(Set.of(Stats.DEFENCE)));
 
     public static final Supplier<Item> HIGH_SMART_CANDY = ITEMS.register("high_smart_candy",
-            () -> new HighHyperTrainingItem(Set.of(Stats.SPECIAL_ATTACK)));
+            () -> new IVBoostItem(Set.of(Stats.SPECIAL_ATTACK)));
 
     public static final Supplier<Item> HIGH_COURAGE_CANDY = ITEMS.register("high_courage_candy",
-            () -> new HighHyperTrainingItem(Set.of(Stats.SPECIAL_DEFENCE)));
+            () -> new IVBoostItem(Set.of(Stats.SPECIAL_DEFENCE)));
 
     public static final Supplier<Item> HIGH_QUICK_CANDY = ITEMS.register("high_quick_candy",
-            () -> new HighHyperTrainingItem(Set.of(Stats.SPEED)));
+            () -> new IVBoostItem(Set.of(Stats.SPEED)));
+
+    public static final Supplier<Item> GOLD_BOTTLE_CAP = ITEMS.register("gold_bottle_cap",
+            () -> new IVBoostItem(Set.of(
+                    Stats.HP,
+                    Stats.ATTACK,
+                    Stats.DEFENCE,
+                    Stats.SPECIAL_ATTACK,
+                    Stats.SPECIAL_DEFENCE,
+                    Stats.SPEED
+            )));
 
     // Charms
     public static final Supplier<Item> SHINY_CHARM = ITEMS.register("shiny_charm",

@@ -14,7 +14,12 @@
   "item.cobblemonextraitems.high_quick_candy": "High Quick Candy",
 
   "tooltip.cobblemonextraitems.ev_item": "Raises the Pokémon's §a%s EVs by §a%s",
-  "tooltip.cobblemonextraitems.iv_item": "Raises the Pokémon's effective §a%s IV stat by §a%s",
+  "tooltip.cobblemonextraitems.iv_item": "Raises the Pokémon's effective §a%s IV stat§r by §a%s",
+  "tooltip.cobblemonextraitems.iv_item_multi": "Raises the Pokémon's §a%s IVs§r by §a%s",
+  "tooltip.cobblemonextraitems.bottle_cap_all": "Maximizes §aall IV stats§r by raising each by §a%s",
+
+  "item.cobblemonextraitems.gold_bottle_cap": "Gold Bottle Cap",
+  "item.cobblemonextraitems.gold_bottle_cap.tooltip": "A rare bottle cap that can hyper train all stats",
 
   "item.cobblemonextraitems.shiny_charm": "Shiny Charm",
   "item.cobblemonextraitems.shiny_charm.tooltip": "§7Increases the chance of finding shiny Pokémon when equipped",

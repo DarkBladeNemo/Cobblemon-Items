@@ -7,7 +7,6 @@ import com.cobblemon.mod.common.api.pokemon.stats.Stats
 import com.cobblemon.mod.common.item.CobblemonItem
 import com.cobblemon.mod.common.pokemon.IVs
 import com.cobblemon.mod.common.pokemon.Pokemon
-import com.darkbladenemo.cobblemonextraitems.component.IVItemData
 import com.darkbladenemo.cobblemonextraitems.config.Config
 import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents
 import net.minecraft.network.chat.Component
@@ -19,13 +18,16 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.Level
 
-class HighHyperTrainingItem(
+/**
+ * Generic IV boosting item that can target one or more stats.
+ * Used for both single-stat candies and multi-stat bottle caps.
+ */
+class IVBoostItem(
     val targetStats: Set<Stat>
 ) : CobblemonItem(Properties()), PokemonSelectingItem {
 
     override val bagItem = null
 
-    // Get IV amount from data component at runtime
     private fun getIVAmount(stack: ItemStack): Int {
         val data = stack.get(ModDataComponents.IV_ITEM_DATA.get())
         return data?.ivAmount() ?: Config.HIGH_IV_INCREASE_AMOUNT.get()
@@ -89,17 +91,46 @@ class HighHyperTrainingItem(
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
 
         val ivIncreaseAmount = getIVAmount(stack)
-        val statName = when(targetStats.firstOrNull()) {
-            Stats.HP -> "HP"
-            Stats.ATTACK -> "Attack"
-            Stats.DEFENCE -> "Defence"
-            Stats.SPECIAL_ATTACK -> "Special Attack"
-            Stats.SPECIAL_DEFENCE -> "Special Defence"
-            Stats.SPEED -> "Speed"
-            else -> "IV"
-        }
 
-        tooltipComponents.add(Component.translatable("tooltip.cobblemonextraitems.iv_item",
-            statName, ivIncreaseAmount))
+        if (targetStats.size == 6) {
+            // Special handling for Gold Bottle Cap (all stats)
+            tooltipComponents.add(
+                Component.translatable("tooltip.cobblemonextraitems.bottle_cap_all",
+                    ivIncreaseAmount)
+            )
+        } else if (targetStats.size > 1) {
+            // Multiple stats (but not all 6)
+            val statList = targetStats.joinToString(", ") { stat ->
+                when(stat) {
+                    Stats.HP -> "HP"
+                    Stats.ATTACK -> "Atk"
+                    Stats.DEFENCE -> "Def"
+                    Stats.SPECIAL_ATTACK -> "SpA"
+                    Stats.SPECIAL_DEFENCE -> "SpD"
+                    Stats.SPEED -> "Spe"
+                    else -> "?"
+                }
+            }
+            tooltipComponents.add(
+                Component.translatable("tooltip.cobblemonextraitems.iv_item_multi",
+                    statList, ivIncreaseAmount)
+            )
+        } else {
+            // Single stat
+            val statName = when(targetStats.firstOrNull()) {
+                Stats.HP -> "HP"
+                Stats.ATTACK -> "Attack"
+                Stats.DEFENCE -> "Defence"
+                Stats.SPECIAL_ATTACK -> "Special Attack"
+                Stats.SPECIAL_DEFENCE -> "Special Defence"
+                Stats.SPEED -> "Speed"
+                else -> "IV"
+            }
+
+            tooltipComponents.add(
+                Component.translatable("tooltip.cobblemonextraitems.iv_item",
+                    statName, ivIncreaseAmount)
+            )
+        }
     }
 }

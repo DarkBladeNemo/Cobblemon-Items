@@ -6,28 +6,18 @@ public class Config {
     public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
-    // Only IV amount is configurable (EV amount is hardcoded to 100)
-    public static final ModConfigSpec.IntValue HIGH_IV_INCREASE_AMOUNT;
-
-    // Enable/Disable items (optional - can remove if you always want all items)
-    public static final ModConfigSpec.IntValue HIGH_EV_INCREASE_AMOUNT;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_CARBOS;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_PROTEIN;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_HP_UP;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_IRON;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_CALCIUM;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_ZINC;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_HEALTH_CANDY;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_MIGHTY_CANDY;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_TOUGH_CANDY;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_SMART_CANDY;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_COURAGE_CANDY;
-    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_QUICK_CANDY;
-
-    public static final ModConfigSpec.DoubleValue SHINY_CHARM_MULTIPLIER;
+    // Charm Configuration
     public static final ModConfigSpec.BooleanValue ENABLE_SHINY_CHARM;
+    public static final ModConfigSpec.DoubleValue SHINY_CHARM_MULTIPLIER;
+    public static final ModConfigSpec.BooleanValue ENABLE_EXP_CHARM;
+    public static final ModConfigSpec.DoubleValue EXP_CHARM_MULTIPLIER;
+    public static final ModConfigSpec.BooleanValue ENABLE_MULTI_CHARM;
+
+    // Type Charm Configuration
     public static final ModConfigSpec.DoubleValue TYPE_CHARM_RADIUS;
     public static final ModConfigSpec.DoubleValue TYPE_CHARM_MULTIPLIER;
+
+    // Enable/Disable type charms
     public static final ModConfigSpec.BooleanValue ENABLE_BUG_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_DARK_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_DRAGON_CHARM;
@@ -46,9 +36,28 @@ public class Config {
     public static final ModConfigSpec.BooleanValue ENABLE_ROCK_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_STEEL_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_WATER_CHARM;
-    public static final ModConfigSpec.DoubleValue EXP_CHARM_MULTIPLIER;
-    public static final ModConfigSpec.BooleanValue ENABLE_EXP_CHARM;
-    public static final ModConfigSpec.BooleanValue ENABLE_MULTI_CHARM;
+
+    // EV and IV increase amounts
+    public static final ModConfigSpec.IntValue HIGH_IV_INCREASE_AMOUNT;
+    public static final ModConfigSpec.IntValue GOLD_BOTTLE_CAP_IV_AMOUNT;
+    public static final ModConfigSpec.IntValue HIGH_EV_INCREASE_AMOUNT;
+
+    // Enable/Disable EV items
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_CARBOS;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_PROTEIN;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_HP_UP;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_IRON;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_CALCIUM;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_ZINC;
+
+    // Enable/Disable IV items
+    public static final ModConfigSpec.BooleanValue ENABLE_GOLD_BOTTLE_CAP;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_HEALTH_CANDY;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_MIGHTY_CANDY;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_TOUGH_CANDY;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_SMART_CANDY;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_COURAGE_CANDY;
+    public static final ModConfigSpec.BooleanValue ENABLE_HIGH_QUICK_CANDY;
 
     static {
         BUILDER.push("High IV Items Configuration");
@@ -56,6 +65,9 @@ public class Config {
         HIGH_IV_INCREASE_AMOUNT = BUILDER
                 .comment("Amount of IVs added by high IV items (default: 10, range: 1-31)")
                 .defineInRange("high_iv_increase_amount", 10, 1, 31);
+        GOLD_BOTTLE_CAP_IV_AMOUNT = BUILDER
+                .comment("Amount of IVs added by Gold Bottle Cap to ALL stats (default: 31 for max IVs, range: 1-31)")
+                .defineInRange("gold_bottle_cap_iv_amount", 31, 1, 31);
 
         ENABLE_HIGH_HEALTH_CANDY = BUILDER.define("enable_high_health_candy", true);
         ENABLE_HIGH_MIGHTY_CANDY = BUILDER.define("enable_high_mighty_candy", true);
@@ -63,6 +75,9 @@ public class Config {
         ENABLE_HIGH_SMART_CANDY = BUILDER.define("enable_high_smart_candy", true);
         ENABLE_HIGH_COURAGE_CANDY = BUILDER.define("enable_high_courage_candy", true);
         ENABLE_HIGH_QUICK_CANDY = BUILDER.define("enable_high_quick_candy", true);
+        ENABLE_GOLD_BOTTLE_CAP = BUILDER
+                .comment("Enable Gold Bottle Cap (increases all IVs)")
+                .define("enable_gold_bottle_cap", true);
 
         BUILDER.pop();
 
@@ -122,6 +137,10 @@ public class Config {
         ENABLE_STEEL_CHARM = BUILDER.define("enable_steel_charm", true);
         ENABLE_WATER_CHARM = BUILDER.define("enable_water_charm", true);
 
+        ENABLE_MULTI_CHARM = BUILDER
+                .comment("Enable Multi Charm item (can combine multiple type charms)")
+                .define("enable_multi_charm", true);
+
         BUILDER.pop();
 
         BUILDER.push("Experience Charm Configuration");
@@ -133,9 +152,6 @@ public class Config {
                 .comment("Enable EXP Charm item")
                 .define("enable_exp_charm", true);
 
-        ENABLE_MULTI_CHARM = BUILDER
-                .comment("Enable Multi Charm item (can combine multiple type charms)")
-                .define("enable_multi_charm", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

@@ -91,5 +91,14 @@ object ModEvents {
         event.modify(ModItems.HIGH_QUICK_CANDY.get()) { builder ->
             builder.set(ModDataComponents.IV_ITEM_DATA.get(), IVItemData(listOf("speed"), ivAmount))
         }
+
+        // Set default IV item data for Gold Bottle Cap
+        val goldBottleCapAmount = Config.GOLD_BOTTLE_CAP_IV_AMOUNT.get()
+
+        event.modify(ModItems.GOLD_BOTTLE_CAP.get()) { builder ->
+            builder.set(ModDataComponents.IV_ITEM_DATA.get(),
+                IVItemData(listOf("hp", "attack", "defence", "special_attack", "special_defence", "speed"),
+                    goldBottleCapAmount))
+        }
     }
 }
