@@ -55,52 +55,62 @@ public class CobblemonExtraItemsMod {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 
-            // Add EV & HyperTraining items as before
-            if (Config.ENABLE_HIGH_CARBOS.get()) event.accept(ModItems.HIGH_CARBOS.get());
-            if (Config.ENABLE_HIGH_PROTEIN.get()) event.accept(ModItems.HIGH_PROTEIN.get());
-            if (Config.ENABLE_HIGH_HP_UP.get()) event.accept(ModItems.HIGH_HP_UP.get());
-            if (Config.ENABLE_HIGH_IRON.get()) event.accept(ModItems.HIGH_IRON.get());
-            if (Config.ENABLE_HIGH_CALCIUM.get()) event.accept(ModItems.HIGH_CALCIUM.get());
-            if (Config.ENABLE_HIGH_ZINC.get()) event.accept(ModItems.HIGH_ZINC.get());
-            if (Config.ENABLE_HIGH_HEALTH_CANDY.get()) event.accept(ModItems.HIGH_HEALTH_CANDY.get());
-            if (Config.ENABLE_HIGH_MIGHTY_CANDY.get()) event.accept(ModItems.HIGH_MIGHTY_CANDY.get());
-            if (Config.ENABLE_HIGH_TOUGH_CANDY.get()) event.accept(ModItems.HIGH_TOUGH_CANDY.get());
-            if (Config.ENABLE_HIGH_SMART_CANDY.get()) event.accept(ModItems.HIGH_SMART_CANDY.get());
-            if (Config.ENABLE_HIGH_COURAGE_CANDY.get()) event.accept(ModItems.HIGH_COURAGE_CANDY.get());
-            if (Config.ENABLE_HIGH_QUICK_CANDY.get()) event.accept(ModItems.HIGH_QUICK_CANDY.get());
-            if (Config.ENABLE_GOLD_BOTTLE_CAP.get()) event.accept(ModItems.GOLD_BOTTLE_CAP.get());
+            // EV Items
+            if(Config.ENABLE_ALL_EV_ITEMS.get()){
+                if (Config.ENABLE_HIGH_CARBOS.get()) event.accept(ModItems.HIGH_CARBOS.get());
+                if (Config.ENABLE_HIGH_PROTEIN.get()) event.accept(ModItems.HIGH_PROTEIN.get());
+                if (Config.ENABLE_HIGH_HP_UP.get()) event.accept(ModItems.HIGH_HP_UP.get());
+                if (Config.ENABLE_HIGH_IRON.get()) event.accept(ModItems.HIGH_IRON.get());
+                if (Config.ENABLE_HIGH_CALCIUM.get()) event.accept(ModItems.HIGH_CALCIUM.get());
+                if (Config.ENABLE_HIGH_ZINC.get()) event.accept(ModItems.HIGH_ZINC.get());
+            }
+
+            // IV Items
+            if(Config.ENABLE_ALL_IV_ITEMS.get()){
+                if (Config.ENABLE_HIGH_HEALTH_CANDY.get()) event.accept(ModItems.HIGH_HEALTH_CANDY.get());
+                if (Config.ENABLE_HIGH_MIGHTY_CANDY.get()) event.accept(ModItems.HIGH_MIGHTY_CANDY.get());
+                if (Config.ENABLE_HIGH_TOUGH_CANDY.get()) event.accept(ModItems.HIGH_TOUGH_CANDY.get());
+                if (Config.ENABLE_HIGH_SMART_CANDY.get()) event.accept(ModItems.HIGH_SMART_CANDY.get());
+                if (Config.ENABLE_HIGH_COURAGE_CANDY.get()) event.accept(ModItems.HIGH_COURAGE_CANDY.get());
+                if (Config.ENABLE_HIGH_QUICK_CANDY.get()) event.accept(ModItems.HIGH_QUICK_CANDY.get());
+                if (Config.ENABLE_GOLD_BOTTLE_CAP.get()) event.accept(ModItems.GOLD_BOTTLE_CAP.get());
+            }
+
+            // Other Charms
             if (Config.ENABLE_SHINY_CHARM.get()) event.accept(ModItems.SHINY_CHARM.get());
             if (Config.ENABLE_EXP_CHARM.get()) event.accept(ModItems.EXP_CHARM.get());
             if (Config.ENABLE_MULTI_CHARM.get()) event.accept(ModItems.MULTI_CHARM.get());
 
-            // Dynamically add all type charms based on config flags
-            for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry : ModItems.TYPE_CHARMS.entrySet()) {
-                CharmType type = entry.getKey();
-                DeferredHolder<Item, TypeCharm> charm = entry.getValue();
+            // Type Charms
+            if (Config.ENABLE_ALL_TYPE_CHARMS.get()) {
+                for (Map.Entry<CharmType, DeferredHolder<Item, TypeCharm>> entry : ModItems.TYPE_CHARMS.entrySet()) {
+                    CharmType type = entry.getKey();
+                    DeferredHolder<Item, TypeCharm> charm = entry.getValue();
 
-                boolean enabled = switch (type) {
-                    case NORMAL -> Config.ENABLE_NORMAL_CHARM.get();
-                    case FIRE -> Config.ENABLE_FIRE_CHARM.get();
-                    case WATER -> Config.ENABLE_WATER_CHARM.get();
-                    case ELECTRIC -> Config.ENABLE_ELECTRIC_CHARM.get();
-                    case GRASS -> Config.ENABLE_GRASS_CHARM.get();
-                    case ICE -> Config.ENABLE_ICE_CHARM.get();
-                    case FIGHTING -> Config.ENABLE_FIGHTING_CHARM.get();
-                    case POISON -> Config.ENABLE_POISON_CHARM.get();
-                    case GROUND -> Config.ENABLE_GROUND_CHARM.get();
-                    case FLYING -> Config.ENABLE_FLYING_CHARM.get();
-                    case PSYCHIC -> Config.ENABLE_PSYCHIC_CHARM.get();
-                    case BUG -> Config.ENABLE_BUG_CHARM.get();
-                    case ROCK -> Config.ENABLE_ROCK_CHARM.get();
-                    case GHOST -> Config.ENABLE_GHOST_CHARM.get();
-                    case DRAGON -> Config.ENABLE_DRAGON_CHARM.get();
-                    case DARK -> Config.ENABLE_DARK_CHARM.get();
-                    case STEEL -> Config.ENABLE_STEEL_CHARM.get();
-                    case FAIRY -> Config.ENABLE_FAIRY_CHARM.get();
-                };
+                    boolean enabled = switch (type) {
+                        case NORMAL -> Config.ENABLE_NORMAL_CHARM.get();
+                        case FIRE -> Config.ENABLE_FIRE_CHARM.get();
+                        case WATER -> Config.ENABLE_WATER_CHARM.get();
+                        case ELECTRIC -> Config.ENABLE_ELECTRIC_CHARM.get();
+                        case GRASS -> Config.ENABLE_GRASS_CHARM.get();
+                        case ICE -> Config.ENABLE_ICE_CHARM.get();
+                        case FIGHTING -> Config.ENABLE_FIGHTING_CHARM.get();
+                        case POISON -> Config.ENABLE_POISON_CHARM.get();
+                        case GROUND -> Config.ENABLE_GROUND_CHARM.get();
+                        case FLYING -> Config.ENABLE_FLYING_CHARM.get();
+                        case PSYCHIC -> Config.ENABLE_PSYCHIC_CHARM.get();
+                        case BUG -> Config.ENABLE_BUG_CHARM.get();
+                        case ROCK -> Config.ENABLE_ROCK_CHARM.get();
+                        case GHOST -> Config.ENABLE_GHOST_CHARM.get();
+                        case DRAGON -> Config.ENABLE_DRAGON_CHARM.get();
+                        case DARK -> Config.ENABLE_DARK_CHARM.get();
+                        case STEEL -> Config.ENABLE_STEEL_CHARM.get();
+                        case FAIRY -> Config.ENABLE_FAIRY_CHARM.get();
+                    };
 
-                if (enabled) {
-                    event.accept(charm.get());
+                    if (enabled) {
+                        event.accept(charm.get());
+                    }
                 }
             }
         }

@@ -6,6 +6,11 @@ public class Config {
     public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
+    // Quick toggles
+    public static final ModConfigSpec.BooleanValue ENABLE_ALL_EV_ITEMS;
+    public static final ModConfigSpec.BooleanValue ENABLE_ALL_IV_ITEMS;
+    public static final ModConfigSpec.BooleanValue ENABLE_ALL_TYPE_CHARMS;
+
     // Charm Configuration
     public static final ModConfigSpec.BooleanValue ENABLE_SHINY_CHARM;
     public static final ModConfigSpec.DoubleValue SHINY_CHARM_MULTIPLIER;
@@ -60,13 +65,51 @@ public class Config {
     public static final ModConfigSpec.BooleanValue ENABLE_HIGH_QUICK_CANDY;
 
     static {
-        BUILDER.push("High IV Items Configuration");
+        BUILDER.push("Quick Toggles");
+        BUILDER.comment("Quick toggles to enable/disable all EV & IV items");
+        ENABLE_ALL_EV_ITEMS = BUILDER
+                .comment("Master toggle for all EV items (overrides individual enables)")
+                .define("enable_all_ev_items", true);
 
+        ENABLE_ALL_IV_ITEMS = BUILDER
+                .comment("Master toggle for all IV items (overrides individual enables)")
+                .define("enable_all_iv_items", true);
+
+        ENABLE_ALL_TYPE_CHARMS = BUILDER
+                .comment("Master toggle for all type charms (overrides individual enables)")
+                .define("enable_all_type_charms", true);
+
+        BUILDER.pop();
+
+        BUILDER.comment("═".repeat(60));
+        BUILDER.comment(" EV & IV TRAINING ITEMS");
+        BUILDER.comment("═".repeat(60));
+        BUILDER.push("Training Items");
+
+        BUILDER.comment("─".repeat(60));
+        BUILDER.comment(" EV (Effort Value) Items");
+        BUILDER.comment("─".repeat(60));
+        HIGH_EV_INCREASE_AMOUNT = BUILDER
+                .comment("Amount of EVs added by high EV items (default: 100, range: 1-252)")
+                .defineInRange("high_ev_increase_amount", 100, 1, 252);
+
+        ENABLE_HIGH_CARBOS = BUILDER.define("enable_high_carbos", true);
+        ENABLE_HIGH_PROTEIN = BUILDER.define("enable_high_protein", true);
+        ENABLE_HIGH_HP_UP = BUILDER.define("enable_high_hp_up", true);
+        ENABLE_HIGH_IRON = BUILDER.define("enable_high_iron", true);
+        ENABLE_HIGH_CALCIUM = BUILDER.define("enable_high_calcium", true);
+        ENABLE_HIGH_ZINC = BUILDER.define("enable_high_zinc", true);
+
+        BUILDER.comment("─".repeat(60));
+        BUILDER.comment(" IV (Individual Value) Items");
+        BUILDER.comment("─".repeat(60));
         HIGH_IV_INCREASE_AMOUNT = BUILDER
-                .comment("Amount of IVs added by high IV items (default: 10, range: 1-31)")
+                .comment("Amount of IVs added by high IV candies (default: 10, range: 1-31)")
                 .defineInRange("high_iv_increase_amount", 10, 1, 31);
+
         GOLD_BOTTLE_CAP_IV_AMOUNT = BUILDER
-                .comment("Amount of IVs added by Gold Bottle Cap to ALL stats (default: 31 for max IVs, range: 1-31)")
+                .comment("Amount of IVs added by Gold Bottle Cap to ALL stats")
+                .comment("Default: 31 (instantly max out all IVs)")
                 .defineInRange("gold_bottle_cap_iv_amount", 31, 1, 31);
 
         ENABLE_HIGH_HEALTH_CANDY = BUILDER.define("enable_high_health_candy", true);
@@ -81,21 +124,11 @@ public class Config {
 
         BUILDER.pop();
 
-        BUILDER.push("High EV Items Configuration");
+        BUILDER.comment("═".repeat(60));
+        BUILDER.comment(" CHARMS");
+        BUILDER.comment("═".repeat(60));
+        BUILDER.push("Charms");
 
-        HIGH_EV_INCREASE_AMOUNT = BUILDER
-                .comment("Amount of EVs added by high EV items (default: 100, range: 1-252)")
-                .defineInRange("high_ev_increase_amount", 100, 1, 252);
-
-        ENABLE_HIGH_CARBOS = BUILDER.define("enable_high_carbos", true);
-        ENABLE_HIGH_PROTEIN = BUILDER.define("enable_high_protein", true);
-        ENABLE_HIGH_HP_UP = BUILDER.define("enable_high_hp_up", true);
-        ENABLE_HIGH_IRON = BUILDER.define("enable_high_iron", true);
-        ENABLE_HIGH_CALCIUM = BUILDER.define("enable_high_calcium", true);
-        ENABLE_HIGH_ZINC = BUILDER.define("enable_high_zinc", true);
-        BUILDER.pop();
-
-        BUILDER.push("Charm Configuration");
         SHINY_CHARM_MULTIPLIER = BUILDER
                 .comment("Shiny Charm multiplier (default: 3.0 = 3x better shiny odds)")
                 .comment("Cobblemon base rate: 1 in 8192")
@@ -118,6 +151,10 @@ public class Config {
                 .comment("With 2 Fire Charms: 1 + (2.0-1)*2 = 3x spawn chance")
                 .defineInRange("type_charm_multiplier", 2.0, 1.0, 100.0);
 
+        BUILDER.comment("─".repeat(60));
+        BUILDER.comment(" Individual Type Charm Toggles");
+        BUILDER.comment("─".repeat(60));
+
         ENABLE_BUG_CHARM = BUILDER.define("enable_bug_charm", true);
         ENABLE_DARK_CHARM = BUILDER.define("enable_dark_charm", true);
         ENABLE_DRAGON_CHARM = BUILDER.define("enable_dragon_charm", true);
@@ -137,10 +174,12 @@ public class Config {
         ENABLE_STEEL_CHARM = BUILDER.define("enable_steel_charm", true);
         ENABLE_WATER_CHARM = BUILDER.define("enable_water_charm", true);
 
+        BUILDER.pop();
+
+        BUILDER.push("Multi Charm Configuration");
         ENABLE_MULTI_CHARM = BUILDER
                 .comment("Enable Multi Charm item (can combine multiple type charms)")
                 .define("enable_multi_charm", true);
-
         BUILDER.pop();
 
         BUILDER.push("Experience Charm Configuration");
