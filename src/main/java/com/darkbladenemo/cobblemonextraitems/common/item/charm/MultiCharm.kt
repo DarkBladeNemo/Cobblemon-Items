@@ -4,6 +4,7 @@ import com.darkbladenemo.cobblemonextraitems.common.component.MultiCharmData
 import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents
 import com.darkbladenemo.cobblemonextraitems.network.payload.OpenMultiCharmScreenPayload
 import net.minecraft.ChatFormatting
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
@@ -27,7 +28,6 @@ class MultiCharm : Item(
         val stack = player.getItemInHand(usedHand)
 
         if (player.isShiftKeyDown && !level.isClientSide) {
-            // Open GUI on shift-right-click
             if (player is ServerPlayer) {
                 PacketDistributor.sendToPlayer(player, OpenMultiCharmScreenPayload())
             }
@@ -58,34 +58,52 @@ class MultiCharm : Item(
                     .withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)
             )
         } else {
-            tooltipComponents.add(
-                Component.translatable("item.cobblemonextraitems.multi_charm.types")
-                    .withStyle(ChatFormatting.GOLD)
-            )
+            if (Screen.hasShiftDown()) {
+                // Show detailed list when shift is held
+                tooltipComponents.add(
+                    Component.translatable("item.cobblemonextraitems.multi_charm.types")
+                        .withStyle(ChatFormatting.GOLD)
+                )
 
-            data.typeEffects().entries.sortedBy { it.key.name }.forEach { (type, effect) ->
-                val status = if (effect.enabled()) {
-                    Component.translatable("item.cobblemonextraitems.multi_charm.enabled")
-                        .withStyle(ChatFormatting.GREEN)
-                } else {
-                    Component.translatable("item.cobblemonextraitems.multi_charm.disabled")
-                        .withStyle(ChatFormatting.RED)
+                data.typeEffects().entries.sortedBy { it.key.name }.forEach { (type, effect) ->
+                    val status = if (effect.enabled()) {
+                        Component.translatable("item.cobblemonextraitems.multi_charm.enabled")
+                            .withStyle(ChatFormatting.GREEN)
+                    } else {
+                        Component.translatable("item.cobblemonextraitems.multi_charm.disabled")
+                            .withStyle(ChatFormatting.RED)
+                    }
+
+                    tooltipComponents.add(
+                        Component.literal("  ")
+                            .append(Component.translatable("cobblemon.type.${type.translationKey}"))
+                            .append(Component.literal(" - "))
+                            .append(status)
+                    )
                 }
+            } else {
+                // Show summary when shift is not held
+                val enabledCount = data.getEnabledEffects().size
+                val totalCount = data.typeEffects().size
 
                 tooltipComponents.add(
-                    Component.literal("  ")
-                        .append(Component.translatable("cobblemon.type.${type.translationKey}"))
-                        .append(Component.literal(" - "))
-                        .append(status)
+                    Component.translatable("item.cobblemonextraitems.multi_charm.summary",
+                        enabledCount, totalCount)
+                        .withStyle(ChatFormatting.AQUA)
+                )
+
+                tooltipComponents.add(
+                    Component.translatable("item.cobblemonextraitems.multi_charm.shift_details")
+                        .withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)
                 )
             }
-
-            tooltipComponents.add(Component.empty())
-            tooltipComponents.add(
-                Component.translatable("item.cobblemonextraitems.multi_charm.hint")
-                    .withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)
-            )
         }
+
+        tooltipComponents.add(Component.empty())
+        tooltipComponents.add(
+            Component.translatable("item.cobblemonextraitems.multi_charm.hint")
+                .withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)
+        )
     }
 
     override fun getName(stack: ItemStack): Component =

@@ -87,6 +87,8 @@
   "item.cobblemonextraitems.multi_charm": "Multi Charm",
   "item.cobblemonextraitems.multi_charm.tooltip": "Combines multiple type charm effects",
   "item.cobblemonextraitems.multi_charm.empty": "No types added yet",
+  "item.cobblemonextraitems.multi_charm.summary": "§b%s§7/§b%s§7 types active",
+  "item.cobblemonextraitems.multi_charm.shift_details": "§7Hold §eShift§7 for details",
   "item.cobblemonextraitems.multi_charm.types": "Active Types:",
   "item.cobblemonextraitems.multi_charm.enabled": "Enabled",
   "item.cobblemonextraitems.multi_charm.disabled": "Disabled",

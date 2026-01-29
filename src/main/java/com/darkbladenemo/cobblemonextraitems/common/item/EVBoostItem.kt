@@ -13,7 +13,7 @@ import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
 
-class HighEVItem(private val targetStat: Stat) : EVIncreaseItem(targetStat, 1) {
+class EVBoostItem(private val targetStat: Stat) : EVIncreaseItem(targetStat, 1) {
     override val sound: SoundEvent = CobblemonSounds.MEDICINE_PILLS_USE
 
     // Get EV amount from data component at runtime

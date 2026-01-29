@@ -2,7 +2,7 @@ package com.darkbladenemo.cobblemonextraitems.init;
 
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.darkbladenemo.cobblemonextraitems.CobblemonExtraItemsMod;
-import com.darkbladenemo.cobblemonextraitems.common.item.HighEVItem;
+import com.darkbladenemo.cobblemonextraitems.common.item.EVBoostItem;
 import com.darkbladenemo.cobblemonextraitems.common.item.IVBoostItem;
 import com.darkbladenemo.cobblemonextraitems.common.item.charm.*;
 import net.minecraft.world.item.Item;
@@ -25,22 +25,22 @@ public class ModItems {
 
     // EV Items - always 100 EVs (not configurable)
     public static final Supplier<Item> HIGH_CARBOS = ITEMS.register("high_carbos",
-            () -> new HighEVItem(Stats.SPEED));
+            () -> new EVBoostItem(Stats.SPEED));
 
     public static final Supplier<Item> HIGH_PROTEIN = ITEMS.register("high_protein",
-            () -> new HighEVItem(Stats.ATTACK));
+            () -> new EVBoostItem(Stats.ATTACK));
 
     public static final Supplier<Item> HIGH_HP_UP = ITEMS.register("high_hp_up",
-            () -> new HighEVItem(Stats.HP));
+            () -> new EVBoostItem(Stats.HP));
 
     public static final Supplier<Item> HIGH_IRON = ITEMS.register("high_iron",
-            () -> new HighEVItem(Stats.DEFENCE));
+            () -> new EVBoostItem(Stats.DEFENCE));
 
     public static final Supplier<Item> HIGH_CALCIUM = ITEMS.register("high_calcium",
-            () -> new HighEVItem(Stats.SPECIAL_ATTACK));
+            () -> new EVBoostItem(Stats.SPECIAL_ATTACK));
 
     public static final Supplier<Item> HIGH_ZINC = ITEMS.register("high_zinc",
-            () -> new HighEVItem(Stats.SPECIAL_DEFENCE));
+            () -> new EVBoostItem(Stats.SPECIAL_DEFENCE));
 
     // High IV items - configurable amount
     public static final Supplier<Item> HIGH_HEALTH_CANDY = ITEMS.register("high_health_candy",
