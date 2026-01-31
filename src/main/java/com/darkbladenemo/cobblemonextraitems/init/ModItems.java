@@ -23,7 +23,7 @@ public class ModItems {
             new EnumMap<>(CharmType.class);
 
 
-    // EV Items - always 100 EVs (not configurable)
+    // EV Items
     public static final Supplier<Item> HIGH_CARBOS = ITEMS.register("high_carbos",
             () -> new EVBoostItem(Stats.SPEED));
 
@@ -90,11 +90,5 @@ public class ModItems {
                     () -> new TypeCharm(type));
             TYPE_CHARMS.put(type, charm);
         }
-    }
-
-    // Helper method to get a type charm
-    public static TypeCharm getTypeCharm(CharmType type) {
-        DeferredHolder<Item, TypeCharm> deferred = TYPE_CHARMS.get(type);
-        return deferred != null ? deferred.get() : null;
     }
 }

@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 public class CobblemonExtraItemsUtils {
     /**
      * Resolves the {@link Species} from a {@link PokemonSpawnDetail}.
-     * Follows CobbleCuisine's pattern for consistency.
      *
      * @param detail The PokemonSpawnDetail instance.
      * @return The resolved {@link Species}, or {@code null} if unspecified.
@@ -53,23 +52,5 @@ public class CobblemonExtraItemsUtils {
         if (secondary != null) {
             consumer.accept(secondary);
         }
-    }
-
-    /**
-     * Checks if a species has a specific elemental type.
-     *
-     * @param species The Pokémon species.
-     * @param type The ElementalType to check.
-     * @return True if the species has this type.
-     */
-    public static boolean speciesHasType(Species species, ElementalType type) {
-        if (species == null || type == null) {
-            return false;
-        }
-
-        ElementalType primary = species.getPrimaryType();
-        ElementalType secondary = species.getSecondaryType();
-
-        return type.equals(primary) || type.equals(secondary);
     }
 }
