@@ -35,8 +35,12 @@ public class CharmEvents {
         });
     }
 
+    /**
+     * Gets the shiny chance multiplier from equipped Shiny Charms.
+     * Returns the first charm's multiplier found, or 1.0f if none equipped.
+     */
     private static float getShinyMultiplier(ServerPlayer player) {
-        final float[] multiplier = {1.0f};
+        float[] multiplier = {1.0f};
 
         CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
             inventory.findCurios("shiny_charm_slot").forEach(slotResult -> {
@@ -46,7 +50,7 @@ public class CharmEvents {
                     if (data != null) {
                         multiplier[0] = data.multiplier();
                     } else {
-                        // Fallback to config
+                        // Fallback to config default if data is missing
                         multiplier[0] = Config.SHINY_CHARM_MULTIPLIER.get().floatValue();
                     }
                 }

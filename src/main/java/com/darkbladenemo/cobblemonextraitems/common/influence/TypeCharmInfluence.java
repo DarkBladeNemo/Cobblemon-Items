@@ -56,6 +56,7 @@ public class TypeCharmInfluence implements SpawningInfluence {
         double distanceSq = playerPos.distSqr(spawnPos);
 
         // Accumulate total bonus from all matching types
+        // Use array wrapper to allow modification inside lambda
         final float[] totalBonus = {0.0f};
 
         CobblemonExtraItemsUtils.forEachType(species, elementalType -> {
@@ -103,7 +104,7 @@ public class TypeCharmInfluence implements SpawningInfluence {
                 }
 
                 // Handle regular type charms
-                if (stack.getItem() instanceof TypeCharm typeCharm) {
+                if (stack.getItem() instanceof TypeCharm) {
                     TypeCharmData data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get());
 
                     // Handle case where component data might be missing (e.g., /give command)

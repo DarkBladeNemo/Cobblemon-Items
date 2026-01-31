@@ -43,8 +43,12 @@ public class ExpCharmEvents {
         event.setExperience(newExp);
     }
 
+    /**
+     * Gets the experience multiplier from equipped EXP Charms.
+     * Returns the first charm's multiplier found, or 1.0f if none equipped.
+     */
     private static float getExpMultiplier(ServerPlayer player) {
-        final float[] multiplier = {1.0f};
+        float[] multiplier = {1.0f};
 
         CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
             inventory.findCurios("exp_charm_slot").forEach(slotResult -> {
