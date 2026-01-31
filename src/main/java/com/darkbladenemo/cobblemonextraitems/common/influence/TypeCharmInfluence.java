@@ -8,9 +8,11 @@ import com.cobblemon.mod.common.api.spawning.influence.SpawningInfluence;
 import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
 import com.cobblemon.mod.common.api.spawning.position.calculators.SpawnablePositionCalculator;
 import com.darkbladenemo.cobblemonextraitems.common.component.MultiCharmData;
-import com.darkbladenemo.cobblemonextraitems.common.component.TypeCharmData;  // ADD THIS IMPORT
+import com.darkbladenemo.cobblemonextraitems.common.component.TypeCharmData;
 import com.darkbladenemo.cobblemonextraitems.common.config.Config;
-import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;  // ADD THIS IMPORT
+import com.darkbladenemo.cobblemonextraitems.common.item.charm.CharmType;
+import com.darkbladenemo.cobblemonextraitems.common.item.charm.TypeCharm;
+import com.darkbladenemo.cobblemonextraitems.init.ModDataComponents;
 import com.darkbladenemo.cobblemonextraitems.init.ModItems;
 import com.darkbladenemo.cobblemonextraitems.common.util.CobblemonExtraItemsUtils;
 import net.minecraft.core.BlockPos;
@@ -20,16 +22,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TypeCharmInfluence implements SpawningInfluence {
 
     private final ServerPlayer player;
-    // Change the cache type from Map<String, Integer> to Map<String, CharmInfo>
-    private Map<String, CharmInfo> cachedCharms;  // CHANGED TYPE HERE
-    private long lastCacheTime = 0;
-    private static final long CACHE_DURATION_MS = 1000;
+    private Map<CharmType, List<CharmInstance>> cachedCharms;
+    private int lastCacheTick = 0;
+    private static final int CACHE_DURATION_TICKS = 20;
 
     public TypeCharmInfluence(ServerPlayer player) {
         this.player = player;
@@ -41,129 +41,149 @@ public class TypeCharmInfluence implements SpawningInfluence {
             return weight;
         }
 
-        Map<String, CharmInfo> typeBoosts = getCachedPlayerTypeCharms();
-        if (typeBoosts.isEmpty()) {
+        Map<CharmType, List<CharmInstance>> charmsByType = getCachedPlayerTypeCharms();
+        if (charmsByType.isEmpty()) {
             return weight;
         }
 
-        BlockPos spawnPos = spawnablePosition.getPosition();
         com.cobblemon.mod.common.pokemon.Species species =
                 CobblemonExtraItemsUtils.resolveSpecies(pokemonDetail);
         if (species == null) return weight;
 
-        float newWeight = weight;
+        // Calculate positions once
+        BlockPos playerPos = player.blockPosition();
+        BlockPos spawnPos = spawnablePosition.getPosition();
+        double distanceSq = playerPos.distSqr(spawnPos);
 
-        for (Map.Entry<String, CharmInfo> entry : typeBoosts.entrySet()) {
-            String charmTypeName = entry.getKey();
-            CharmInfo info = entry.getValue();
+        // Accumulate total bonus from all matching types
+        final float[] totalBonus = {0.0f};
 
-            // Check radius from charm data
-            double distanceSq = player.blockPosition().distSqr(spawnPos);
-            if (distanceSq > info.radius * info.radius) {
-                continue;
+        CobblemonExtraItemsUtils.forEachType(species, elementalType -> {
+            CharmType charmType = CharmType.fromElementalType(elementalType);
+            if (charmType == null) return;
+
+            List<CharmInstance> charms = charmsByType.get(charmType);
+            if (charms == null) return;
+
+            // Sum bonuses from all charms in range
+            for (CharmInstance charm : charms) {
+                if (distanceSq <= charm.radiusSquared) {
+                    totalBonus[0] += (charm.multiplier - 1.0f);
+                }
             }
+        });
 
-            if (CobblemonExtraItemsUtils.speciesHasType(species, charmTypeName)) {
-                float totalMultiplier = 1.0f + ((info.multiplier - 1.0f) * info.count);
-                newWeight *= totalMultiplier;
-            }
+        // Apply total bonus if any
+        if (totalBonus[0] > 0) {
+            return weight * (1.0f + totalBonus[0]);
         }
 
-        return newWeight;
+        return weight;
     }
 
-    private Map<String, CharmInfo> getCachedPlayerTypeCharms() {  // CHANGED RETURN TYPE HERE
-        long currentTime = System.currentTimeMillis();
-        if (cachedCharms == null || currentTime - lastCacheTime > CACHE_DURATION_MS) {
+    private Map<CharmType, List<CharmInstance>> getCachedPlayerTypeCharms() {
+        int currentTick = player.tickCount;
+        if (cachedCharms == null || currentTick - lastCacheTick >= CACHE_DURATION_TICKS) {
             cachedCharms = calculatePlayerTypeCharms();
-            lastCacheTime = currentTime;
+            lastCacheTick = currentTick;
         }
         return cachedCharms;
     }
 
-    private Map<String, CharmInfo> calculatePlayerTypeCharms() {
-        Map<String, CharmInfo> typeBoosts = new HashMap<>();
+    private Map<CharmType, List<CharmInstance>> calculatePlayerTypeCharms() {
+        // Use EnumMap for better performance with enum keys
+        Map<CharmType, List<CharmInstance>> charmsByType = new EnumMap<>(CharmType.class);
 
         CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-            // Check type charm slot for regular type charms
             inventory.findCurios("type_charm_slot").forEach(slotResult -> {
                 ItemStack stack = slotResult.stack();
 
+                if (stack.isEmpty()) {
+                    return;
+                }
+
                 // Handle regular type charms
-                ModItems.TYPE_CHARMS.forEach((type, deferredCharm) -> {
-                    if (stack.is(deferredCharm.get())) {
-                        TypeCharmData data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get());
+                if (stack.getItem() instanceof TypeCharm typeCharm) {
+                    TypeCharmData data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get());
 
-                        float multiplier = data != null
-                                ? data.multiplier()
-                                : Config.TYPE_CHARM_MULTIPLIER.get().floatValue();
+                    // Handle case where component data might be missing (e.g., /give command)
+                    if (data != null) {
+                        CharmType type = data.type();
+                        float multiplier = data.multiplier();
+                        double radius = data.radius();
 
-                        double radius = data != null
-                                ? data.radius()
-                                : Config.TYPE_CHARM_RADIUS.get();
+                        addCharmInstance(charmsByType, type, multiplier, radius);
+                    } else {
+                        // Fallback: Try to determine type from registered items
+                        ModItems.TYPE_CHARMS.forEach((type, deferredCharm) -> {
+                            if (stack.is(deferredCharm.get())) {
+                                float multiplier = Config.TYPE_CHARM_MULTIPLIER.get().floatValue();
+                                double radius = Config.TYPE_CHARM_RADIUS.get();
 
-                        String typeName = type.getTranslationKey();
-                        typeBoosts.merge(
-                                typeName,
-                                new CharmInfo(1, multiplier, radius),
-                                (existing, newInfo) -> new CharmInfo(
-                                        existing.count + 1,
-                                        existing.multiplier,
-                                        existing.radius
-                                )
-                        );
+                                addCharmInstance(charmsByType, type, multiplier, radius);
+                            }
+                        });
                     }
-                });
-
+                }
                 // Handle multi-charms
-                if (stack.is(ModItems.MULTI_CHARM.get())) {
+                else if (stack.is(ModItems.MULTI_CHARM.get())) {
                     MultiCharmData multiData = stack.get(ModDataComponents.MULTI_CHARM_DATA.get());
+
                     if (multiData != null) {
                         multiData.getEnabledEffects().forEach((type, effect) -> {
-                            String typeName = type.getTranslationKey();
-                            typeBoosts.merge(
-                                    typeName,
-                                    new CharmInfo(1, effect.multiplier(), effect.radius()),
-                                    (existing, newInfo) -> new CharmInfo(
-                                            existing.count + 1,
-                                            existing.multiplier,
-                                            existing.radius
-                                    )
-                            );
+                            addCharmInstance(charmsByType, type, effect.multiplier(), effect.radius());
                         });
                     }
                 }
             });
         });
 
-        return typeBoosts;
+        return charmsByType;
     }
 
-    private static class CharmInfo {
-        final int count;
-        final float multiplier;
-        final double radius;
+    /**
+     * Helper method to add a charm instance to the map.
+     * Each charm is tracked separately with its own radius.
+     */
+    private void addCharmInstance(Map<CharmType, List<CharmInstance>> charmsByType,
+                                  CharmType type, float multiplier, double radius) {
+        charmsByType.computeIfAbsent(type, k -> new ArrayList<>(4))
+                .add(CharmInstance.fromRadius(multiplier, radius));
+    }
 
-        CharmInfo(int count, float multiplier, double radius) {
-            this.count = count;
-            this.multiplier = multiplier;
-            this.radius = radius;
+    /**
+     * Represents a single charm instance with pre-calculated squared radius.
+     * Stores radius squared to avoid repeated calculation during spawn checks.
+     */
+    private record CharmInstance(float multiplier, double radiusSquared) {
+        /**
+         * Creates a CharmInstance from a radius, pre-calculating the squared value.
+         */
+        static CharmInstance fromRadius(float multiplier, double radius) {
+            return new CharmInstance(multiplier, radius * radius);
         }
     }
 
     @Override
-    public boolean isExpired() { return false; }
+    public boolean isExpired() {
+        return false;
+    }
+
     @Override
     public void affectAction(SpawnAction<?> action) { }
+
     @Override
     public void affectSpawn(SpawnAction<?> action, Entity entity) { }
+
     @Override
     public void affectBucketWeights(Map<SpawnBucket, Float> bucketWeights) { }
+
     @Override
     public boolean isAllowedPosition(ServerLevel world, BlockPos pos,
                                      SpawnablePositionCalculator<?, ?> calculator) {
         return true;
     }
+
     @Override
     public boolean affectSpawnable(SpawnDetail detail, SpawnablePosition position) {
         return true;

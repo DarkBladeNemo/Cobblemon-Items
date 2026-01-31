@@ -2,9 +2,12 @@ package com.darkbladenemo.cobblemonextraitems.common.util;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail;
+import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 public class CobblemonExtraItemsUtils {
     /**
@@ -22,7 +25,7 @@ public class CobblemonExtraItemsUtils {
         }
 
         // Handle both "cobblemon:pikachu" and "pikachu" formats
-        ResourceLocation resourceLocation = speciesName.indexOf(':') >= 0
+        ResourceLocation resourceLocation = speciesName.contains(":")
                 ? ResourceLocation.parse(speciesName)
                 : ResourceLocation.fromNamespaceAndPath("cobblemon", speciesName);
 
@@ -30,28 +33,25 @@ public class CobblemonExtraItemsUtils {
     }
 
     /**
-     * Gets the elemental types of a species as strings for easy comparison.
-     * Useful for type charm matching without importing Cobblemon types everywhere.
+     * Iterates over each ElementalType of a species without allocations.
+     * Uses Cobblemon's native API for better performance.
      *
      * @param species The Pokémon species.
-     * @return Array of type names (primary at index 0, secondary at index 1 if exists).
+     * @param consumer Consumer to process each type.
      */
-    public static String[] getSpeciesTypeNames(Species species) {
+    public static void forEachType(Species species, Consumer<ElementalType> consumer) {
         if (species == null) {
-            return new String[0];
+            return;
         }
 
-        String primary = species.getPrimaryType() != null
-                ? species.getPrimaryType().getName().toLowerCase()
-                : null;
-        String secondary = species.getSecondaryType() != null
-                ? species.getSecondaryType().getName().toLowerCase()
-                : null;
+        ElementalType primary = species.getPrimaryType();
+        if (primary != null) {
+            consumer.accept(primary);
+        }
 
+        ElementalType secondary = species.getSecondaryType();
         if (secondary != null) {
-            return new String[]{primary, secondary};
-        } else {
-            return new String[]{primary};
+            consumer.accept(secondary);
         }
     }
 
@@ -59,20 +59,17 @@ public class CobblemonExtraItemsUtils {
      * Checks if a species has a specific elemental type.
      *
      * @param species The Pokémon species.
-     * @param typeName The type name to check (lowercase).
+     * @param type The ElementalType to check.
      * @return True if the species has this type.
      */
-    public static boolean speciesHasType(Species species, String typeName) {
-        if (species == null || typeName == null) {
+    public static boolean speciesHasType(Species species, ElementalType type) {
+        if (species == null || type == null) {
             return false;
         }
 
-        String[] types = getSpeciesTypeNames(species);
-        for (String type : types) {
-            if (typeName.equalsIgnoreCase(type)) {
-                return true;
-            }
-        }
-        return false;
+        ElementalType primary = species.getPrimaryType();
+        ElementalType secondary = species.getSecondaryType();
+
+        return type.equals(primary) || type.equals(secondary);
     }
 }

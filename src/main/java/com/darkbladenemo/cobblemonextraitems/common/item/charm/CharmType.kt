@@ -21,10 +21,22 @@ enum class CharmType(val translationKey: String) {
     FAIRY("fairy");
 
     companion object {
-        @JvmStatic  // Add this annotation for Java interop
+        // Build the map once at class load for O(1) lookups
+        private val BY_KEY = entries.associateBy { it.translationKey.lowercase() }
+
+        @JvmStatic
         fun fromString(type: String?): CharmType? {
             if (type == null) return null
-            return entries.find { it.translationKey.equals(type, ignoreCase = true) }
+            return BY_KEY[type.lowercase()]
+        }
+
+        /**
+         * Fast conversion from Cobblemon's ElementalType to CharmType.
+         * Uses the ElementalType's showdownId which is already lowercase and normalized.
+         */
+        @JvmStatic
+        fun fromElementalType(type: com.cobblemon.mod.common.api.types.ElementalType): CharmType? {
+            return BY_KEY[type.showdownId]
         }
     }
 }
