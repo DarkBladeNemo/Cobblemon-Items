@@ -84,10 +84,10 @@ public class MultiCharmRecipe extends CustomRecipe {
         }
 
         ItemStack result = multiCharm.copy();
+        // Only pass type and multiplier - radius is now global
         MultiCharmData newData = multiData.addType(
                 typeData.type(),
-                typeData.multiplier(),
-                typeData.radius()
+                typeData.matchMultiplier()
         );
         result.set(ModDataComponents.MULTI_CHARM_DATA.get(), newData);
 

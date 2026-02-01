@@ -30,14 +30,14 @@ object ModEvents {
         }
 
         // Set default Type charm data for all type charms
-        val typeMultiplier = Config.TYPE_CHARM_MULTIPLIER.get().toFloat()
-        val typeRadius = Config.TYPE_CHARM_RADIUS.get()
+        // NOTE: Radius is no longer stored per-charm, uses global config value
+        val matchMultiplier = Config.TYPE_CHARM_MATCH_MULTIPLIER.get().toFloat()
 
         ModItems.TYPE_CHARMS.forEach { (type, deferredCharm) ->
             event.modify(deferredCharm.get()) { builder ->
                 builder.set(
                     ModDataComponents.TYPE_CHARM_DATA.get(),
-                    TypeCharmData(type, typeMultiplier, typeRadius)
+                    TypeCharmData(type, matchMultiplier)
                 )
             }
         }

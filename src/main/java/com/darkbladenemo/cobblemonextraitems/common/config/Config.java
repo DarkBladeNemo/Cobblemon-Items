@@ -20,7 +20,8 @@ public class Config {
 
     // Type Charm Configuration
     public static final ModConfigSpec.DoubleValue TYPE_CHARM_RADIUS;
-    public static final ModConfigSpec.DoubleValue TYPE_CHARM_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue TYPE_CHARM_MATCH_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue TYPE_CHARM_NON_MATCH_MULTIPLIER;
 
     // Enable/Disable type charms
     public static final ModConfigSpec.BooleanValue ENABLE_BUG_CHARM;
@@ -143,13 +144,22 @@ public class Config {
 
         BUILDER.push("Type Charm Configuration");
         TYPE_CHARM_RADIUS = BUILDER
-                .comment("Radius in blocks where type charms affect spawns (default: 32.0)")
-                .defineInRange("type_charm_radius", 32.0, 1.0, 256.0);
+                .comment("GLOBAL radius in blocks where type charms affect spawns")
+                .comment("CobbleCuisine uses 80 blocks for reference (default: 64.0)")
+                .defineInRange("type_charm_radius", 64.0, 1.0, 256.0);
 
-        TYPE_CHARM_MULTIPLIER = BUILDER
-                .comment("Weight multiplier per charm (default: 2.0 = doubles spawn chance)")
-                .comment("With 2 Fire Charms: 1 + (2.0-1)*2 = 3x spawn chance")
-                .defineInRange("type_charm_multiplier", 2.0, 1.0, 100.0);
+        TYPE_CHARM_MATCH_MULTIPLIER = BUILDER
+                .comment("Weight multiplier for Pokémon that MATCH the charm type")
+                .comment("Example: Fire Charm boosts Fire-type spawns by this multiplier")
+                .comment("CobbleCuisine uses 5.0 (default: 5.0)")
+                .defineInRange("type_charm_match_multiplier", 5.0, 1.0, 100.0);
+
+        TYPE_CHARM_NON_MATCH_MULTIPLIER = BUILDER
+                .comment("Weight multiplier for Pokémon that DON'T match the charm type")
+                .comment("Example: Fire Charm reduces non-Fire spawns to this multiplier")
+                .comment("CobbleCuisine uses 0.5 to reduce other types (default: 0.5)")
+                .comment("Set to 1.0 to disable penalty (no effect on non-matching types)")
+                .defineInRange("type_charm_non_match_multiplier", 0.5, 0.0, 1.0);
 
         BUILDER.comment("─".repeat(60));
         BUILDER.comment(" Individual Type Charm Toggles");

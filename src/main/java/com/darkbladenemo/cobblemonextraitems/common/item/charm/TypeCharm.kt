@@ -32,17 +32,28 @@ class TypeCharm(
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag)
 
         val data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get())
-        val multiplier = data?.multiplier() ?: Config.TYPE_CHARM_MULTIPLIER.get().toFloat()
-        val radius = data?.radius() ?: Config.TYPE_CHARM_RADIUS.get()
+        val matchMultiplier = data?.matchMultiplier() ?: Config.TYPE_CHARM_MATCH_MULTIPLIER.get().toFloat()
 
+        // Main effect description
         tooltipComponents.add(
             Component.translatable(
                 "item.cobblemonextraitems.${type.translationKey}_charm.tooltip",
-                String.format("%.1f", multiplier)
+                String.format("%.1f", matchMultiplier)
             )
         )
 
-        tooltipComponents.add(Component.literal("§7Radius: §a${radius.toInt()} blocks"))
+        // Show global penalty if it's enabled (< 1.0)
+        val globalPenalty = Config.TYPE_CHARM_NON_MATCH_MULTIPLIER.get().toFloat()
+        if (globalPenalty < 1.0f) {
+            val penaltyPercent = (1.0f - globalPenalty) * 100
+            tooltipComponents.add(
+                Component.literal("§7Other types: §c-${String.format("%.0f", penaltyPercent)}%")
+            )
+        }
+
+        // Show global radius (same for all type charms)
+        val globalRadius = Config.TYPE_CHARM_RADIUS.get().toInt()
+        tooltipComponents.add(Component.literal("§7Radius: §a$globalRadius blocks"))
     }
 
     override fun getName(stack: ItemStack): Component =

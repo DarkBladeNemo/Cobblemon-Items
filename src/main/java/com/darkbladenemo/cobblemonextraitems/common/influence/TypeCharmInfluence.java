@@ -27,9 +27,20 @@ import java.util.*;
 public class TypeCharmInfluence implements SpawningInfluence {
 
     private final ServerPlayer player;
-    private Map<CharmType, List<CharmInstance>> cachedCharms;
-    private int lastCacheTick = 0;
-    private static final int CACHE_DURATION_TICKS = 20;
+
+    // Cache for equipped charms - updated every 20 ticks (1 second)
+    private Map<CharmType, Float> cachedCharmMultipliers;
+    private int lastCharmCacheTick = 0;
+    private static final int CHARM_CACHE_DURATION_TICKS = 20;
+
+    // Cache for player position - updated every tick
+    private BlockPos cachedPlayerPos;
+    private int lastPositionCacheTick = -1;
+
+    // Global values from config - calculated once at class load
+    private static final double GLOBAL_RADIUS = Config.TYPE_CHARM_RADIUS.get();
+    private static final double GLOBAL_RADIUS_SQUARED = GLOBAL_RADIUS * GLOBAL_RADIUS;
+    private static final float GLOBAL_NON_MATCH_PENALTY = Config.TYPE_CHARM_NON_MATCH_MULTIPLIER.get().floatValue();
 
     public TypeCharmInfluence(ServerPlayer player) {
         this.player = player;
@@ -41,128 +52,155 @@ public class TypeCharmInfluence implements SpawningInfluence {
             return weight;
         }
 
-        Map<CharmType, List<CharmInstance>> charmsByType = getCachedPlayerTypeCharms();
-        if (charmsByType.isEmpty()) {
+        // Get cached charm multipliers - updates every second
+        Map<CharmType, Float> charmMultipliers = getCachedCharmMultipliers();
+
+        // Early exit: no charms equipped
+        if (charmMultipliers.isEmpty()) {
             return weight;
         }
 
-        com.cobblemon.mod.common.pokemon.Species species =
-                CobblemonExtraItemsUtils.resolveSpecies(pokemonDetail);
-        if (species == null) return weight;
-
-        // Calculate positions once
-        BlockPos playerPos = player.blockPosition();
+        // Get cached player position - updates every tick
+        BlockPos playerPos = getCachedPlayerPosition();
         BlockPos spawnPos = spawnablePosition.getPosition();
+
+        // Early exit: spawn position too far from player
+        // Quick Manhattan distance check before expensive squared distance
+        double dx = Math.abs(playerPos.getX() - spawnPos.getX());
+        double dz = Math.abs(playerPos.getZ() - spawnPos.getZ());
+
+        // If either X or Z distance alone exceeds global radius, can't possibly be in range
+        if (dx > GLOBAL_RADIUS || dz > GLOBAL_RADIUS) {
+            return weight;
+        }
+
+        // Now calculate actual distance squared
         double distanceSq = playerPos.distSqr(spawnPos);
 
-        // Accumulate total bonus from all matching types
-        // Use array wrapper to allow modification inside lambda
-        final float[] totalBonus = {0.0f};
+        // Early exit: spawn too far from player
+        if (distanceSq > GLOBAL_RADIUS_SQUARED) {
+            return weight;
+        }
+
+        // Resolve species once
+        com.cobblemon.mod.common.pokemon.Species species =
+                CobblemonExtraItemsUtils.resolveSpecies(pokemonDetail);
+        if (species == null) {
+            return weight;
+        }
+
+        // Check if this spawn matches any equipped charm types
+        final float[] totalMatchBonus = {0.0f};
+        final boolean[] matchesAnyCharm = {false};
 
         CobblemonExtraItemsUtils.forEachType(species, elementalType -> {
             CharmType charmType = CharmType.fromElementalType(elementalType);
             if (charmType == null) return;
 
-            List<CharmInstance> charms = charmsByType.get(charmType);
-            if (charms == null) return;
-
-            // Sum bonuses from all charms in range
-            for (CharmInstance charm : charms) {
-                if (distanceSq <= charm.radiusSquared) {
-                    totalBonus[0] += (charm.multiplier - 1.0f);
-                }
+            Float multiplier = charmMultipliers.get(charmType);
+            if (multiplier != null) {
+                matchesAnyCharm[0] = true;
+                // Accumulate match bonuses additively
+                totalMatchBonus[0] += (multiplier - 1.0f);
             }
         });
 
-        // Apply total bonus if any
-        if (totalBonus[0] > 0) {
-            return weight * (1.0f + totalBonus[0]);
+        // Apply effects based on whether spawn matches
+        if (matchesAnyCharm[0]) {
+            // This spawn matches at least one charm - apply match bonus
+            if (totalMatchBonus[0] > 0) {
+                weight *= (1.0f + totalMatchBonus[0]);
+            }
+        } else {
+            // This spawn doesn't match any charm - apply global penalty
+            weight *= GLOBAL_NON_MATCH_PENALTY;
         }
 
         return weight;
     }
 
-    private Map<CharmType, List<CharmInstance>> getCachedPlayerTypeCharms() {
+    /**
+     * Gets cached player position, updating cache every tick.
+     */
+    private BlockPos getCachedPlayerPosition() {
         int currentTick = player.tickCount;
-        if (cachedCharms == null || currentTick - lastCacheTick >= CACHE_DURATION_TICKS) {
-            cachedCharms = calculatePlayerTypeCharms();
-            lastCacheTick = currentTick;
+        if (cachedPlayerPos == null || currentTick != lastPositionCacheTick) {
+            cachedPlayerPos = player.blockPosition();
+            lastPositionCacheTick = currentTick;
         }
-        return cachedCharms;
+        return cachedPlayerPos;
     }
 
-    private Map<CharmType, List<CharmInstance>> calculatePlayerTypeCharms() {
+    /**
+     * Gets cached charm multipliers, updating every 20 ticks (1 second).
+     */
+    private Map<CharmType, Float> getCachedCharmMultipliers() {
+        int currentTick = player.tickCount;
+        if (cachedCharmMultipliers == null || currentTick - lastCharmCacheTick >= CHARM_CACHE_DURATION_TICKS) {
+            cachedCharmMultipliers = calculateCharmMultipliers();
+            lastCharmCacheTick = currentTick;
+        }
+        return cachedCharmMultipliers;
+    }
+
+    /**
+     * Calculates aggregated match multipliers for each charm type.
+     * Non-match penalty is global from config.
+     */
+    private Map<CharmType, Float> calculateCharmMultipliers() {
         // Use EnumMap for better performance with enum keys
-        Map<CharmType, List<CharmInstance>> charmsByType = new EnumMap<>(CharmType.class);
+        Map<CharmType, Float> multipliers = new EnumMap<>(CharmType.class);
 
-        CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-            inventory.findCurios("type_charm_slot").forEach(slotResult -> {
-                ItemStack stack = slotResult.stack();
+        CuriosApi.getCuriosInventory(player).ifPresent(inventory ->
+                inventory.findCurios("type_charm_slot").forEach(slotResult -> {
+            ItemStack stack = slotResult.stack();
 
-                if (stack.isEmpty()) {
-                    return;
+            if (stack.isEmpty()) {
+                return;
+            }
+
+            // Handle regular type charms
+            if (stack.getItem() instanceof TypeCharm) {
+                TypeCharmData data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get());
+
+                if (data != null) {
+                    CharmType type = data.type();
+                    float multiplier = data.matchMultiplier();
+                    addMultiplier(multipliers, type, multiplier);
+                } else {
+                    // Fallback: Try to determine type from registered items
+                    ModItems.TYPE_CHARMS.forEach((type, deferredCharm) -> {
+                        if (stack.is(deferredCharm.get())) {
+                            float multiplier = Config.TYPE_CHARM_MATCH_MULTIPLIER.get().floatValue();
+                            addMultiplier(multipliers, type, multiplier);
+                        }
+                    });
                 }
+            }
+            // Handle multi-charms
+            else if (stack.is(ModItems.MULTI_CHARM.get())) {
+                MultiCharmData multiData = stack.get(ModDataComponents.MULTI_CHARM_DATA.get());
 
-                // Handle regular type charms
-                if (stack.getItem() instanceof TypeCharm) {
-                    TypeCharmData data = stack.get(ModDataComponents.TYPE_CHARM_DATA.get());
-
-                    // Handle case where component data might be missing (e.g., /give command)
-                    if (data != null) {
-                        CharmType type = data.type();
-                        float multiplier = data.multiplier();
-                        double radius = data.radius();
-
-                        addCharmInstance(charmsByType, type, multiplier, radius);
-                    } else {
-                        // Fallback: Try to determine type from registered items
-                        ModItems.TYPE_CHARMS.forEach((type, deferredCharm) -> {
-                            if (stack.is(deferredCharm.get())) {
-                                float multiplier = Config.TYPE_CHARM_MULTIPLIER.get().floatValue();
-                                double radius = Config.TYPE_CHARM_RADIUS.get();
-
-                                addCharmInstance(charmsByType, type, multiplier, radius);
-                            }
-                        });
-                    }
+                if (multiData != null) {
+                    multiData.getEnabledEffects().forEach((type, effect) ->
+                            addMultiplier(multipliers, type, effect.matchMultiplier()));
                 }
-                // Handle multi-charms
-                else if (stack.is(ModItems.MULTI_CHARM.get())) {
-                    MultiCharmData multiData = stack.get(ModDataComponents.MULTI_CHARM_DATA.get());
+            }
+        }));
 
-                    if (multiData != null) {
-                        multiData.getEnabledEffects().forEach((type, effect) -> {
-                            addCharmInstance(charmsByType, type, effect.multiplier(), effect.radius());
-                        });
-                    }
-                }
-            });
+        return multipliers;
+    }
+
+    /**
+     * Adds a charm's multiplier to the aggregated total for a type.
+     * Multiple charms of the same type stack additively.
+     */
+    private void addMultiplier(Map<CharmType, Float> multipliers, CharmType type, float multiplier) {
+        multipliers.merge(type, multiplier, (existing, newVal) -> {
+            // Additive stacking: combine bonuses
+            // e.g., 5.0 + 5.0 = 1.0 + (4.0 + 4.0) = 9.0
+            return 1.0f + ((existing - 1.0f) + (newVal - 1.0f));
         });
-
-        return charmsByType;
-    }
-
-    /**
-     * Helper method to add a charm instance to the map.
-     * Each charm is tracked separately with its own radius.
-     */
-    private void addCharmInstance(Map<CharmType, List<CharmInstance>> charmsByType,
-                                  CharmType type, float multiplier, double radius) {
-        charmsByType.computeIfAbsent(type, k -> new ArrayList<>(4))
-                .add(CharmInstance.fromRadius(multiplier, radius));
-    }
-
-    /**
-     * Represents a single charm instance with pre-calculated squared radius.
-     * Stores radius squared to avoid repeated calculation during spawn checks.
-     */
-    private record CharmInstance(float multiplier, double radiusSquared) {
-        /**
-         * Creates a CharmInstance from a radius, pre-calculating the squared value.
-         */
-        static CharmInstance fromRadius(float multiplier, double radius) {
-            return new CharmInstance(multiplier, radius * radius);
-        }
     }
 
     @Override

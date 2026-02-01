@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public record MultiCharmData(
         Map<CharmType, TypeEffect> typeEffects
@@ -32,24 +31,16 @@ public record MultiCharmData(
         return new MultiCharmData(new HashMap<>());
     }
 
-    /**
-     * Adds a type effect to this multi-charm
-     * @return New MultiCharmData with the added effect, or the same if type already exists
-     */
-    public MultiCharmData addType(CharmType type, float multiplier, double radius) {
+    public MultiCharmData addType(CharmType type, float matchMultiplier) {
         if (typeEffects.containsKey(type)) {
-            return this; // Type already exists, don't add
+            return this;
         }
 
         Map<CharmType, TypeEffect> newEffects = new HashMap<>(typeEffects);
-        newEffects.put(type, new TypeEffect(multiplier, radius, true));
+        newEffects.put(type, new TypeEffect(matchMultiplier, true));
         return new MultiCharmData(newEffects);
     }
 
-    /**
-     * Toggles the enabled state of a type effect
-     * @return New MultiCharmData with toggled state, or same if type doesn't exist
-     */
     public MultiCharmData toggleType(CharmType type) {
         if (!typeEffects.containsKey(type)) {
             return this;
@@ -57,43 +48,43 @@ public record MultiCharmData(
 
         Map<CharmType, TypeEffect> newEffects = new HashMap<>(typeEffects);
         TypeEffect current = newEffects.get(type);
-        newEffects.put(type, new TypeEffect(current.multiplier(), current.radius(), !current.enabled()));
+        newEffects.put(type, new TypeEffect(current.matchMultiplier(), !current.enabled()));
         return new MultiCharmData(newEffects);
     }
 
     /**
-     * Gets all enabled type effects
+     * Gets all enabled type effects.
      */
     public Map<CharmType, TypeEffect> getEnabledEffects() {
-        return typeEffects.entrySet().stream()
-                .filter(entry -> entry.getValue().enabled())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        // Use EnumMap for better performance with enum keys
+        Map<CharmType, TypeEffect> enabled = new EnumMap<>(CharmType.class);
+
+        // Simple forEach - no stream overhead
+        typeEffects.forEach((type, effect) -> {
+            if (effect.enabled()) {
+                enabled.put(type, effect);
+            }
+        });
+
+        return enabled;
     }
 
-    /**
-     * Checks if a type is present (regardless of enabled state)
-     */
     public boolean hasType(CharmType type) {
         return typeEffects.containsKey(type);
     }
 
-    /**
-     * Checks if a type is enabled
-     */
     public boolean isTypeEnabled(CharmType type) {
         TypeEffect effect = typeEffects.get(type);
         return effect != null && effect.enabled();
     }
 
     public record TypeEffect(
-            float multiplier,
-            double radius,
+            float matchMultiplier,
             boolean enabled
     ) {
         public static final Codec<TypeEffect> CODEC = RecordCodecBuilder.create(instance ->
                 instance.group(
-                        Codec.FLOAT.fieldOf("multiplier").forGetter(TypeEffect::multiplier),
-                        Codec.DOUBLE.fieldOf("radius").forGetter(TypeEffect::radius),
+                        Codec.FLOAT.fieldOf("match_multiplier").forGetter(TypeEffect::matchMultiplier),
                         Codec.BOOL.fieldOf("enabled").forGetter(TypeEffect::enabled)
                 ).apply(instance, TypeEffect::new)
         );

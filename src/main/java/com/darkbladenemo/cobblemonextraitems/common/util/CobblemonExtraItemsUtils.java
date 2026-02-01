@@ -7,11 +7,21 @@ import com.cobblemon.mod.common.pokemon.Species;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class CobblemonExtraItemsUtils {
     /**
+     * Cache for species resolution to avoid repeated registry lookups.
+     * Species definitions don't change at runtime, so this is safe.
+     * Using ConcurrentHashMap for thread-safety during world gen.
+     */
+    private static final Map<String, Species> SPECIES_CACHE = new ConcurrentHashMap<>();
+
+    /**
      * Resolves the {@link Species} from a {@link PokemonSpawnDetail}.
+     * Uses a cache to avoid repeated registry lookups for the same species.
      *
      * @param detail The PokemonSpawnDetail instance.
      * @return The resolved {@link Species}, or {@code null} if unspecified.
@@ -23,12 +33,15 @@ public class CobblemonExtraItemsUtils {
             return null;
         }
 
-        // Handle both "cobblemon:pikachu" and "pikachu" formats
-        ResourceLocation resourceLocation = speciesName.contains(":")
-                ? ResourceLocation.parse(speciesName)
-                : ResourceLocation.fromNamespaceAndPath("cobblemon", speciesName);
+        // Check cache first
+        return SPECIES_CACHE.computeIfAbsent(speciesName, name -> {
+            // Handle both "cobblemon:pikachu" and "pikachu" formats
+            ResourceLocation resourceLocation = name.contains(":")
+                    ? ResourceLocation.parse(name)
+                    : ResourceLocation.fromNamespaceAndPath("cobblemon", name);
 
-        return PokemonSpecies.INSTANCE.getByIdentifier(resourceLocation);
+            return PokemonSpecies.INSTANCE.getByIdentifier(resourceLocation);
+        });
     }
 
     /**
@@ -52,5 +65,13 @@ public class CobblemonExtraItemsUtils {
         if (secondary != null) {
             consumer.accept(secondary);
         }
+    }
+
+    /**
+     * Clears the species cache. Useful for resource reload events if needed.
+     * Generally not necessary as species don't change during normal gameplay.
+     */
+    public static void clearSpeciesCache() {
+        SPECIES_CACHE.clear();
     }
 }
