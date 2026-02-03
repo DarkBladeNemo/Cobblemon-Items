@@ -30,13 +30,16 @@ public class ModNetworking {
                 OpenMultiCharmScreenPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> {
                     // Handle on client - open screen
-                    net.minecraft.client.Minecraft.getInstance().setScreen(
-                            new com.darkbladenemo.cobblemonextraitems.client.gui.MultiCharmScreen(
-                                    net.minecraft.client.Minecraft.getInstance().player,
-                                    payload.slotIndex(),
-                                    payload.fromCurio()
-                            )
-                    );
+                    net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
+                    if (minecraft.player != null) {
+                        minecraft.setScreen(
+                                new com.darkbladenemo.cobblemonextraitems.client.gui.MultiCharmScreen(
+                                        minecraft.player,
+                                        payload.slotIndex(),
+                                        payload.fromCurio()
+                                )
+                        );
+                    }
                 })
         );
 

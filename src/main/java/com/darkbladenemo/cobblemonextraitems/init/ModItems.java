@@ -73,18 +73,18 @@ public class ModItems {
 
     // Charms
     public static final Supplier<Item> SHINY_CHARM = ITEMS.register("shiny_charm",
-            () -> new ShinyCharm());
+            ShinyCharm::new);
 
     public static final Supplier<Item> EXP_CHARM = ITEMS.register("exp_charm",
-            () -> new ExpCharm());
+            ExpCharm::new);
 
     public static final Supplier<Item> MULTI_CHARM = ITEMS.register("multi_charm",
-            () -> new MultiCharm());
+            MultiCharm::new);
 
     // Static initializer block to register type charms
     static {
         // Register all type charms
-        for (CharmType type : CharmType.values()) {
+        for (CharmType type : CharmType.getEntries()) {
             String name = type.getTranslationKey() + "_charm";
             DeferredHolder<Item, TypeCharm> charm = ITEMS.register(name,
                     () -> new TypeCharm(type));

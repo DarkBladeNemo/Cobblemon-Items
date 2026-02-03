@@ -44,7 +44,7 @@ public class KeyInputHandler {
                 // If only one Multi-Charm, open it directly
                 // If multiple, open selection GUI
                 if (multiCharmSlots.size() == 1) {
-                    PacketDistributor.sendToServer(new OpenMultiCharmFromCurioPayload(multiCharmSlots.get(0)));
+                    PacketDistributor.sendToServer(new OpenMultiCharmFromCurioPayload(multiCharmSlots.getFirst()));
                 } else {
                     // Open selection screen
                     minecraft.setScreen(new com.darkbladenemo.cobblemonextraitems.client.gui.MultiCharmSelectionScreen(

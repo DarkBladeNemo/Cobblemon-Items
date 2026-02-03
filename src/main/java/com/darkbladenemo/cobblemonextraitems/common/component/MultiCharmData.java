@@ -42,13 +42,10 @@ public record MultiCharmData(
     }
 
     public MultiCharmData toggleType(CharmType type) {
-        if (!typeEffects.containsKey(type)) {
-            return this;
-        }
-
         Map<CharmType, TypeEffect> newEffects = new HashMap<>(typeEffects);
-        TypeEffect current = newEffects.get(type);
-        newEffects.put(type, new TypeEffect(current.matchMultiplier(), !current.enabled()));
+        newEffects.computeIfPresent(type, (k, current) ->
+                new TypeEffect(current.matchMultiplier(), !current.enabled())
+        );
         return new MultiCharmData(newEffects);
     }
 

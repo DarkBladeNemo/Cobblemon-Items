@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.*;
@@ -47,7 +48,7 @@ public class TypeCharmInfluence implements SpawningInfluence {
     }
 
     @Override
-    public float affectWeight(SpawnDetail detail, SpawnablePosition spawnablePosition, float weight) {
+    public float affectWeight(@NotNull SpawnDetail detail, @NotNull SpawnablePosition spawnablePosition, float weight) {
         if (!(detail instanceof PokemonSpawnDetail pokemonDetail)) {
             return weight;
         }
@@ -209,22 +210,22 @@ public class TypeCharmInfluence implements SpawningInfluence {
     }
 
     @Override
-    public void affectAction(SpawnAction<?> action) { }
+    public void affectAction(@NotNull SpawnAction<?> action) { }
 
     @Override
-    public void affectSpawn(SpawnAction<?> action, Entity entity) { }
+    public void affectSpawn(@NotNull SpawnAction<?> action, @NotNull Entity entity) { }
 
     @Override
-    public void affectBucketWeights(Map<SpawnBucket, Float> bucketWeights) { }
+    public void affectBucketWeights(@NotNull Map<SpawnBucket, Float> bucketWeights) { }
 
     @Override
-    public boolean isAllowedPosition(ServerLevel world, BlockPos pos,
-                                     SpawnablePositionCalculator<?, ?> calculator) {
+    public boolean isAllowedPosition(@NotNull ServerLevel world, @NotNull BlockPos pos,
+                                     @NotNull SpawnablePositionCalculator<?, ?> calculator) {
         return true;
     }
 
     @Override
-    public boolean affectSpawnable(SpawnDetail detail, SpawnablePosition position) {
+    public boolean affectSpawnable(@NotNull SpawnDetail detail, @NotNull SpawnablePosition position) {
         return true;
     }
 }
