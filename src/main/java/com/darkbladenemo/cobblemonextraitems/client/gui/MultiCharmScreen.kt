@@ -23,7 +23,7 @@ class MultiCharmScreen(
 
     private val TEXTURE = ResourceLocation.fromNamespaceAndPath(CobblemonExtraItemsMod.MOD_ID, "textures/gui/multi_charm.png")
     private val GUI_WIDTH = 176
-    private val GUI_HEIGHT = 166
+    private val GUI_HEIGHT = 256
 
     private var leftPos = 0
     private var topPos = 0
@@ -128,16 +128,22 @@ class MultiCharmScreen(
         }
     }
 
+    override fun renderBlurredBackground(delta: Float) {}
+    override fun renderMenuBackground(guiGraphics: GuiGraphics){}
+
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        renderBackground(guiGraphics, mouseX, mouseY, partialTick)
+        guiGraphics.blit(TEXTURE, leftPos, topPos, 0f, 0f, GUI_WIDTH, GUI_HEIGHT, 176, 256)
         super.render(guiGraphics, mouseX, mouseY, partialTick)
+
+        val titleX = leftPos + (GUI_WIDTH / 2) - (font.width(title) / 2)
+        val titleY = topPos + 6
 
         // Render title
         guiGraphics.drawString(
             font,
             title,
-            leftPos + 8,
-            topPos + 6,
+            titleX,
+            titleY,
             0x404040,
             false
         )
