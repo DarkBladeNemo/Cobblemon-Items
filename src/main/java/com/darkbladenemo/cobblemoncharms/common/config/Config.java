@@ -96,6 +96,7 @@ public class Config {
 
     // Global charm settings
     public static final BooleanValue CHARM_EFFECT_REQUIRES_ADVANCEMENT = bool("charm_effect_requires_advancement", true);
+    public static final BooleanValue GRANT_CHARM_ON_ADVANCEMENT = bool("grant_charm_on_advancement",       true);
 
     // Shiny Charm
     public static final BooleanValue ENABLE_SHINY_CHARM       = bool("enable_shiny_charm", true);
