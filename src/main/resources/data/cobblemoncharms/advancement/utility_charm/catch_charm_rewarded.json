@@ -1,0 +1,16 @@
+{
+  "parent": "cobblemoncharms:utility_charm/catch_charm",
+  "display": {
+    "icon": { "id": "cobblemoncharms:catch_charm" },
+    "title": { "translate": "advancement.cobblemoncharms.catch_charm.title" },
+    "description": { "translate": "advancement.cobblemoncharms.catch_charm.description" },
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "criteria": {
+    "rewarded": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

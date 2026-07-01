@@ -3,37 +3,46 @@ package com.darkbladenemo.cobblemoncharms.common.event;
 import com.darkbladenemo.cobblemoncharms.advancement.ModAdvancement;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Awards charm items when a player logs in and already has the corresponding advancement.
- * Handles cases where the advancement was granted offline or via /advancement.
+ * Awards charm items at the moment their advancement is earned.
+ * Called from AdvancementUtils.grantAdvancement() for programmatically granted advancements,
+ * and from HandleAdvancement (every 20 ticks) to catch vanilla-triggered ones like
+ * cobblemon:catch_pokemon and cobblemon:level_up.
+ *
+ * No login check — the tick loop handles detection promptly enough,
+ * and a login check would give duplicates to players who stored their charm elsewhere.
  */
 public class AdvancementRewardHandler {
 
     public static void register() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            checkExpCharm(handler.player);
-            checkCatchCharm(handler.player);
-        });
+
     }
 
-    public static void checkExpCharm(ServerPlayer player) {
+    public static void checkRewards(ServerPlayer player) {
+        tryGiveExpCharm(player);
+        tryGiveCatchCharm(player);
+    }
+
+    private static void tryGiveExpCharm(ServerPlayer player) {
         if (!Config.ENABLE_EXP_CHARM.get()) return;
 
-        AdvancementHolder expCharmAdvancement =
-                ModAdvancement.EXP_CHARM.getAdvancement(player.serverLevel());
-        if (expCharmAdvancement == null) return;
-        if (!player.getAdvancements().getOrStartProgress(expCharmAdvancement).isDone()) return;
+        AdvancementHolder earned = ModAdvancement.EXP_CHARM.getAdvancement(player.serverLevel());
+        AdvancementHolder rewarded = ModAdvancement.EXP_CHARM_REWARDED.getAdvancement(player.serverLevel());
+        if (earned == null || rewarded == null) return;
 
-        // Only give the item if they don't already have one
-        boolean alreadyHas = player.getInventory().items.stream()
-                .anyMatch(s -> s.is(ModItems.EXP_CHARM));
-        if (alreadyHas) return;
+        if (!player.getAdvancements().getOrStartProgress(earned).isDone()) return;
+        if (player.getAdvancements().getOrStartProgress(rewarded).isDone()) return;
+
+        // Mark rewarded before giving item to prevent double-giving
+        for (String criterion : player.getAdvancements()
+                .getOrStartProgress(rewarded).getRemainingCriteria()) {
+            player.getAdvancements().award(rewarded, criterion);
+        }
 
         ItemStack stack = new ItemStack(ModItems.EXP_CHARM);
         if (!player.getInventory().add(stack)) {
@@ -43,18 +52,20 @@ public class AdvancementRewardHandler {
                 Component.translatable("message.cobblemoncharms.exp_charm_awarded"));
     }
 
-    public static void checkCatchCharm(ServerPlayer player) {
+    private static void tryGiveCatchCharm(ServerPlayer player) {
         if (!Config.ENABLE_CATCH_CHARM.get()) return;
 
-        AdvancementHolder catchCharmAdvancement =
-                ModAdvancement.CATCH_CHARM.getAdvancement(player.serverLevel());
-        if (catchCharmAdvancement == null) return;
-        if (!player.getAdvancements().getOrStartProgress(catchCharmAdvancement).isDone()) return;
+        AdvancementHolder earned = ModAdvancement.CATCH_CHARM.getAdvancement(player.serverLevel());
+        AdvancementHolder rewarded = ModAdvancement.CATCH_CHARM_REWARDED.getAdvancement(player.serverLevel());
+        if (earned == null || rewarded == null) return;
 
-        // Only give the item if they don't already have one
-        boolean alreadyHas = player.getInventory().items.stream()
-                .anyMatch(s -> s.is(ModItems.CATCH_CHARM));
-        if (alreadyHas) return;
+        if (!player.getAdvancements().getOrStartProgress(earned).isDone()) return;
+        if (player.getAdvancements().getOrStartProgress(rewarded).isDone()) return;
+
+        for (String criterion : player.getAdvancements()
+                .getOrStartProgress(rewarded).getRemainingCriteria()) {
+            player.getAdvancements().award(rewarded, criterion);
+        }
 
         ItemStack stack = new ItemStack(ModItems.CATCH_CHARM);
         if (!player.getInventory().add(stack)) {

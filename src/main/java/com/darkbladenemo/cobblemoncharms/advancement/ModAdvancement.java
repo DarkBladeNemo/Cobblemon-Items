@@ -10,7 +10,9 @@ public enum ModAdvancement {
     ROOT("root", null),
     SHINY_CHARM("dex_charm/shiny_charm", "national"),
     EXP_CHARM("utility_charm/exp_charm", null),
+    EXP_CHARM_REWARDED("utility_charm/exp_charm_rewarded", null),
     CATCH_CHARM("utility_charm/catch_charm", null),
+    CATCH_CHARM_REWARDED("utility_charm/catch_charm_rewarded", null),
     NORMAL_CHARM("type_charms/normal_charm", null),
     FIRE_CHARM("type_charms/fire_charm", null),
     WATER_CHARM("type_charms/water_charm", null),
@@ -41,7 +43,6 @@ public enum ModAdvancement {
     PALDEA_DEX("dex_charm/paldea_dex", "paldea");
 
     private final ResourceLocation identifier;
-    /** The dex region key this advancement is tied to, or {@code null} if not region-gated. */
     private final String regionKey;
 
     ModAdvancement(String path, String regionKey) {

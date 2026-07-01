@@ -1,0 +1,16 @@
+{
+  "parent": "cobblemoncharms:utility_charm/exp_charm",
+  "display": {
+    "icon": { "id": "cobblemoncharms:exp_charm" },
+    "title": { "translate": "advancement.cobblemoncharms.exp_charm.title" },
+    "description": { "translate": "advancement.cobblemoncharms.exp_charm.description" },
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "criteria": {
+    "rewarded": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
