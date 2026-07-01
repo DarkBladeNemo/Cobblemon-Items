@@ -73,6 +73,8 @@ public class TypeCharmAdvancementEvents {
             boolean granted = AdvancementUtils.grantAdvancement(player, advancement);
             if (!granted) continue;
 
+            if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) continue;
+
             var charmHolder = ModItems.TYPE_CHARMS.get(type);
             if (charmHolder == null) continue;
 
@@ -119,6 +121,8 @@ public class TypeCharmAdvancementEvents {
 
             boolean granted = AdvancementUtils.grantAdvancement(player, advancement);
             if (!granted) continue;
+
+            if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) continue;
 
             var charmHolder = ModItems.TYPE_CHARMS.get(type);
             if (charmHolder == null) continue;

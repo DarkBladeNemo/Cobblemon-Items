@@ -45,7 +45,7 @@ public class HandleAdvancement {
                 ModAdvancement.SHINY_CHARM.getAdvancement(player.serverLevel());
 
         boolean newlyGranted = AdvancementUtils.grantAdvancement(player, shinyCharmAdvancement);
-        if (newlyGranted) {
+        if (newlyGranted && Config.GRANT_CHARM_ON_ADVANCEMENT.get()) {
             giveShinyCharm(player, threshold);
         }
     }

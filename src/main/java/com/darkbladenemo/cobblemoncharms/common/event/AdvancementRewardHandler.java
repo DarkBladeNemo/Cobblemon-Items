@@ -30,6 +30,7 @@ public class AdvancementRewardHandler {
 
     private static void checkExpCharm(ServerPlayer player, AdvancementHolder earned) {
         if (!Config.ENABLE_EXP_CHARM.get()) return;
+        if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
 
         AdvancementHolder expCharmAdvancement =
                 ModAdvancement.EXP_CHARM.getAdvancement(player.serverLevel());
@@ -43,6 +44,7 @@ public class AdvancementRewardHandler {
 
     private static void checkCatchCharm(ServerPlayer player, AdvancementHolder earned) {
         if (!Config.ENABLE_CATCH_CHARM.get()) return;
+        if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
 
         AdvancementHolder catchCharmAdvancement =
                 ModAdvancement.CATCH_CHARM.getAdvancement(player.serverLevel());

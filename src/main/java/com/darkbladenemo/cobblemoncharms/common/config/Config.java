@@ -17,6 +17,7 @@ public class Config {
 
     // Global charm settings
     public static final ModConfigSpec.BooleanValue CHARM_EFFECT_REQUIRES_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_CHARM_ON_ADVANCEMENT;
 
     // Shiny Charm
     public static final ModConfigSpec.BooleanValue ENABLE_SHINY_CHARM;
@@ -136,6 +137,9 @@ public class Config {
         CHARM_EFFECT_REQUIRES_ADVANCEMENT = BUILDER
                 .comment("If true, charms have no effect until the player earns the corresponding advancement")
                 .define("charm_effect_requires_advancement", true);
+        GRANT_CHARM_ON_ADVANCEMENT = BUILDER
+                .comment("If true, charms will be granted when a charm related advancement is earned")
+                .define("grant_charm_on_advancement", true);
 
         BUILDER.push("Shiny Charm");
         ENABLE_SHINY_CHARM = BUILDER
