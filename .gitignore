@@ -23,4 +23,9 @@ run
 runs
 run-data
 
+# Minecraft / datagen outputs
+src/generated/
+src/main/generated/
+**/.cache/
+
 repo
