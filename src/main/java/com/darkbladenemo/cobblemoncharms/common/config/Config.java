@@ -252,4 +252,30 @@ public class Config {
         ModConfigSpec.BooleanValue value = TYPE_CHARM_CONFIG_MAP.get(type);
         return value == null || value.get();
     }
+
+    /**
+     * Called client-side when a SyncConfigPayload is received from the server.
+     * Overwrites in-memory values with server values so tooltips reflect server config.
+     */
+    public static void syncFromServer(
+            boolean charmEffectRequiresAdvancement,
+            boolean grantCharmOnAdvancement,
+            float shinyCharmMultiplier,
+            float expCharmMultiplier,
+            float catchCharmMultiplier,
+            float typeCharmMatchMultiplier,
+            float typeCharmNonMatchMultiplier,
+            double typeCharmRadius,
+            double typeCharmThresholdPercentage
+    ) {
+        CHARM_EFFECT_REQUIRES_ADVANCEMENT.set(charmEffectRequiresAdvancement);
+        GRANT_CHARM_ON_ADVANCEMENT.set(grantCharmOnAdvancement);
+        SHINY_CHARM_MULTIPLIER.set((double) shinyCharmMultiplier);
+        EXP_CHARM_MULTIPLIER.set((double) expCharmMultiplier);
+        CATCH_CHARM_MULTIPLIER.set((double) catchCharmMultiplier);
+        TYPE_CHARM_MATCH_MULTIPLIER.set((double) typeCharmMatchMultiplier);
+        TYPE_CHARM_NON_MATCH_MULTIPLIER.set((double) typeCharmNonMatchMultiplier);
+        TYPE_CHARM_RADIUS.set(typeCharmRadius);
+        TYPE_CHARM_THRESHOLD_PERCENTAGE.set(typeCharmThresholdPercentage);
+    }
 }

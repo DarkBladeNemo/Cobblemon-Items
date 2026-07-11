@@ -3,6 +3,7 @@ package com.darkbladenemo.cobblemoncharms.network;
 import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
 import com.darkbladenemo.cobblemoncharms.client.network.ClientPacketHandlers;
 import com.darkbladenemo.cobblemoncharms.common.component.MultiCharmData;
+import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.init.ModDataComponents;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType;
@@ -27,7 +28,8 @@ public class ModNetworking {
                 OpenMultiCharmScreenPayload.TYPE,
                 OpenMultiCharmScreenPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() ->
-                        ClientPacketHandlers.handleOpenMultiCharmScreen(payload.slotIndex(), payload.fromCurio())
+                        ClientPacketHandlers.handleOpenMultiCharmScreen(
+                                payload.slotIndex(), payload.fromCurio())
                 )
         );
 
@@ -36,7 +38,8 @@ public class ModNetworking {
                 ToggleMultiCharmTypePayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> {
                     ServerPlayer player = (ServerPlayer) context.player();
-                    ItemStack stack = getMultiCharmStack(player, payload.curioSlotIndex(), payload.fromCurio());
+                    ItemStack stack = getMultiCharmStack(
+                            player, payload.curioSlotIndex(), payload.fromCurio());
 
                     if (!stack.isEmpty()) {
                         CharmType type = CharmType.fromString(payload.typeName());
@@ -45,7 +48,8 @@ public class ModNetworking {
                             if (data != null && data.hasType(type)) {
                                 MultiCharmData newData = data.toggleType(type);
                                 stack.set(ModDataComponents.MULTI_CHARM_DATA.get(), newData);
-                                PacketDistributor.sendToPlayer(player, new RefreshMultiCharmScreenPayload(newData));
+                                PacketDistributor.sendToPlayer(player,
+                                        new RefreshMultiCharmScreenPayload(newData));
                             }
                         }
                     }
@@ -89,13 +93,42 @@ public class ModNetworking {
                                 .update(payload.earnedIds())
                 )
         );
+
+        registrar.playToClient(
+                SyncConfigPayload.TYPE,
+                SyncConfigPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() ->
+                        Config.syncFromServer(
+                                payload.charmEffectRequiresAdvancement(),
+                                payload.grantCharmOnAdvancement(),
+                                payload.shinyCharmMultiplier(),
+                                payload.expCharmMultiplier(),
+                                payload.catchCharmMultiplier(),
+                                payload.typeCharmMatchMultiplier(),
+                                payload.typeCharmNonMatchMultiplier(),
+                                payload.typeCharmRadius(),
+                                payload.typeCharmThresholdPercentage()
+                        )
+                )
+        );
     }
 
-    /**
-     * Resolves the Multi-Charm stack from either a Curios slot (keybind) or the player's hands
-     * (shift-right-click).
-     */
-    private static ItemStack getMultiCharmStack(ServerPlayer player, int curioSlotIndex, boolean fromCurio) {
+    public static SyncConfigPayload buildConfigSnapshot() {
+        return new SyncConfigPayload(
+                Config.CHARM_EFFECT_REQUIRES_ADVANCEMENT.get(),
+                Config.GRANT_CHARM_ON_ADVANCEMENT.get(),
+                Config.SHINY_CHARM_MULTIPLIER.get().floatValue(),
+                Config.EXP_CHARM_MULTIPLIER.get().floatValue(),
+                Config.CATCH_CHARM_MULTIPLIER.get().floatValue(),
+                Config.TYPE_CHARM_MATCH_MULTIPLIER.get().floatValue(),
+                Config.TYPE_CHARM_NON_MATCH_MULTIPLIER.get().floatValue(),
+                Config.TYPE_CHARM_RADIUS.get(),
+                Config.TYPE_CHARM_THRESHOLD_PERCENTAGE.get()
+        );
+    }
+
+    private static ItemStack getMultiCharmStack(ServerPlayer player,
+                                                int curioSlotIndex, boolean fromCurio) {
         if (fromCurio && curioSlotIndex >= 0) {
             ItemStack[] result = {ItemStack.EMPTY};
             CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {

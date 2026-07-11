@@ -2,6 +2,7 @@ package com.darkbladenemo.cobblemoncharms.common.event;
 
 import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
 import com.darkbladenemo.cobblemoncharms.advancement.ModAdvancement;
+import com.darkbladenemo.cobblemoncharms.network.ModNetworking;
 import com.darkbladenemo.cobblemoncharms.network.payload.SyncAdvancementsPayload;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
@@ -16,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Keeps the client's advancement cache in sync so charm tooltips reflect real advancement
- * state. Sends a full snapshot on login and after each mod advancement is earned.
+ * Keeps the client's advancement cache and config values in sync.
+ * Sends a full snapshot on login and after each mod advancement is earned.
  */
 @EventBusSubscriber(modid = cobblemoncharmsMod.MOD_ID)
 public class AdvancementSyncEvents {
@@ -26,6 +27,8 @@ public class AdvancementSyncEvents {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, buildSnapshot(player));
+            // Sync config on login so client tooltips reflect server config
+            PacketDistributor.sendToPlayer(player, ModNetworking.buildConfigSnapshot());
         }
     }
 
