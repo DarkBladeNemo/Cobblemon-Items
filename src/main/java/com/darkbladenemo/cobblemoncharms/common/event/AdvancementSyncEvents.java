@@ -1,6 +1,7 @@
 package com.darkbladenemo.cobblemoncharms.common.event;
 
 import com.darkbladenemo.cobblemoncharms.advancement.ModAdvancement;
+import com.darkbladenemo.cobblemoncharms.network.ModNetworking;
 import com.darkbladenemo.cobblemoncharms.network.payload.SyncAdvancementsPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -13,15 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Keeps the client's advancement cache in sync so charm tooltips reflect real advancement
- * state. Sends a full snapshot on login and after each mod advancement is earned.
+ * Keeps the client's advancement cache and config values in sync.
+ * Sends a full snapshot on login and periodically to catch any changes.
  */
 public class AdvancementSyncEvents {
 
     public static void register() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
-                sendSnapshot(handler.player)
-        );
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            sendSnapshot(handler.player);
+            // Sync config on join so client tooltips reflect server config
+            ServerPlayNetworking.send(handler.player, ModNetworking.buildConfigSnapshot());
+        });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             if (server.getTickCount() % 100 != 0) return;

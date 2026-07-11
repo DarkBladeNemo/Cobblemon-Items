@@ -266,4 +266,30 @@ public class Config {
         ALL_INTS.add(v);
         return v;
     }
+
+    /**
+     * Called client-side when a SyncConfigPayload is received from the server.
+     * Overwrites in-memory values with server values so tooltips reflect server config.
+     */
+    public static void syncFromServer(
+            boolean charmEffectRequiresAdvancement,
+            boolean grantCharmOnAdvancement,
+            float shinyCharmMultiplier,
+            float expCharmMultiplier,
+            float catchCharmMultiplier,
+            float typeCharmMatchMultiplier,
+            float typeCharmNonMatchMultiplier,
+            double typeCharmRadius,
+            double typeCharmThresholdPercentage
+    ) {
+        CHARM_EFFECT_REQUIRES_ADVANCEMENT.set(charmEffectRequiresAdvancement);
+        GRANT_CHARM_ON_ADVANCEMENT.set(grantCharmOnAdvancement);
+        SHINY_CHARM_MULTIPLIER.set(shinyCharmMultiplier);
+        EXP_CHARM_MULTIPLIER.set(expCharmMultiplier);
+        CATCH_CHARM_MULTIPLIER.set(catchCharmMultiplier);
+        TYPE_CHARM_MATCH_MULTIPLIER.set(typeCharmMatchMultiplier);
+        TYPE_CHARM_NON_MATCH_MULTIPLIER.set(typeCharmNonMatchMultiplier);
+        TYPE_CHARM_RADIUS.set(typeCharmRadius);
+        TYPE_CHARM_THRESHOLD_PERCENTAGE.set(typeCharmThresholdPercentage);
+    }
 }

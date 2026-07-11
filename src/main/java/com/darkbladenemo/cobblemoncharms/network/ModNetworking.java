@@ -1,6 +1,7 @@
 package com.darkbladenemo.cobblemoncharms.network;
 
 import com.darkbladenemo.cobblemoncharms.common.component.MultiCharmData;
+import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType;
 import com.darkbladenemo.cobblemoncharms.init.ModDataComponents;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
@@ -13,15 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ModNetworking {
 
-    /**
-     * Registers all payload types and server-side (C2S) handlers.
-     * Call from CobblemonCharmsFabric.onInitialize().
-     *
-     * Client-side S2C handlers are registered in ModNetworkingClient
-     * from the client entrypoint, since they reference client-only classes.
-     */
     public static void registerServer() {
-        // -- Register payload types --------------------------------------------
         // S2C
         PayloadTypeRegistry.playS2C().register(
                 OpenMultiCharmScreenPayload.TYPE,
@@ -32,6 +25,9 @@ public class ModNetworking {
         PayloadTypeRegistry.playS2C().register(
                 SyncAdvancementsPayload.TYPE,
                 SyncAdvancementsPayload.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(
+                SyncConfigPayload.TYPE,
+                SyncConfigPayload.STREAM_CODEC);
 
         // C2S
         PayloadTypeRegistry.playC2S().register(
@@ -41,7 +37,7 @@ public class ModNetworking {
                 OpenMultiCharmFromCurioPayload.TYPE,
                 OpenMultiCharmFromCurioPayload.STREAM_CODEC);
 
-        // -- C2S handlers (server receives) ------------------------------------
+        // C2S handlers
         ServerPlayNetworking.registerGlobalReceiver(
                 ToggleMultiCharmTypePayload.TYPE,
                 (payload, context) -> {
@@ -85,9 +81,20 @@ public class ModNetworking {
                 });
     }
 
-    /**
-     * Resolves the Multi-Charm stack from either a Trinkets slot or the player's hands.
-     */
+    public static SyncConfigPayload buildConfigSnapshot() {
+        return new SyncConfigPayload(
+                Config.CHARM_EFFECT_REQUIRES_ADVANCEMENT.get(),
+                Config.GRANT_CHARM_ON_ADVANCEMENT.get(),
+                Config.SHINY_CHARM_MULTIPLIER.floatValue(),
+                Config.EXP_CHARM_MULTIPLIER.floatValue(),
+                Config.CATCH_CHARM_MULTIPLIER.floatValue(),
+                Config.TYPE_CHARM_MATCH_MULTIPLIER.floatValue(),
+                Config.TYPE_CHARM_NON_MATCH_MULTIPLIER.floatValue(),
+                Config.TYPE_CHARM_RADIUS.get(),
+                Config.TYPE_CHARM_THRESHOLD_PERCENTAGE.get()
+        );
+    }
+
     static ItemStack getMultiCharmStack(ServerPlayer player, int slotIndex, boolean fromTrinket) {
         if (fromTrinket && slotIndex >= 0) {
             ItemStack[] result = {ItemStack.EMPTY};
