@@ -76,7 +76,7 @@ public class TypeCharmAdvancementEvents {
             boolean granted = AdvancementUtils.grantAdvancement(player, advancement);
             if (!granted) continue;
 
-            if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) continue;
+            if (!Config.isTypeCharmGrantedOnAdvancement(type)) continue;
 
             ItemStack charm = new ItemStack(ModItems.TYPE_CHARMS.get(type));
             if (!player.getInventory().add(charm)) player.drop(charm, false);
@@ -118,7 +118,7 @@ public class TypeCharmAdvancementEvents {
             boolean granted = AdvancementUtils.grantAdvancement(player, advancement);
             if (!granted) continue;
 
-            if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) continue;
+            if (!Config.isTypeCharmGrantedOnAdvancement(type)) continue;
 
             ItemStack charm = new ItemStack(ModItems.TYPE_CHARMS.get(type));
             if (!player.getInventory().add(charm)) player.drop(charm, false);

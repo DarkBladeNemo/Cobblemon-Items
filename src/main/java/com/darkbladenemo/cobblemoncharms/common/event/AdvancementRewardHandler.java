@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
  * Called from AdvancementUtils.grantAdvancement() for programmatically granted advancements,
  * and from HandleAdvancement (every 20 ticks) to catch vanilla-triggered ones like
  * cobblemon:catch_pokemon and cobblemon:level_up.
- *
+ * <p>
  * No login check — the tick loop handles detection promptly enough,
  * and a login check would give duplicates to players who stored their charm elsewhere.
  */
@@ -31,6 +31,7 @@ public class AdvancementRewardHandler {
     private static void tryGiveExpCharm(ServerPlayer player) {
         if (!Config.ENABLE_EXP_CHARM.get()) return;
         if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
+        if (!Config.GRANT_EXP_CHARM_ON_ADVANCEMENT.get()) return;
 
         AdvancementHolder earned = ModAdvancement.EXP_CHARM.getAdvancement(player.serverLevel());
         AdvancementHolder rewarded = ModAdvancement.EXP_CHARM_REWARDED.getAdvancement(player.serverLevel());
@@ -56,6 +57,7 @@ public class AdvancementRewardHandler {
     private static void tryGiveCatchCharm(ServerPlayer player) {
         if (!Config.ENABLE_CATCH_CHARM.get()) return;
         if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
+        if (!Config.GRANT_CATCH_CHARM_ON_ADVANCEMENT.get()) return;
 
         AdvancementHolder earned = ModAdvancement.CATCH_CHARM.getAdvancement(player.serverLevel());
         AdvancementHolder rewarded = ModAdvancement.CATCH_CHARM_REWARDED.getAdvancement(player.serverLevel());
