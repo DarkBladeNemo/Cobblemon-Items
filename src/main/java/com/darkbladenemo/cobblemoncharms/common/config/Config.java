@@ -14,22 +14,25 @@ public class Config {
     public static final ModConfigSpec.BooleanValue ENABLE_ALL_EV_ITEMS;
     public static final ModConfigSpec.BooleanValue ENABLE_ALL_IV_ITEMS;
     public static final ModConfigSpec.BooleanValue ENABLE_ALL_TYPE_CHARMS;
+    public static final ModConfigSpec.BooleanValue GRANT_CHARM_ON_ADVANCEMENT;
 
     // Global charm settings
     public static final ModConfigSpec.BooleanValue CHARM_EFFECT_REQUIRES_ADVANCEMENT;
-    public static final ModConfigSpec.BooleanValue GRANT_CHARM_ON_ADVANCEMENT;
 
     // Shiny Charm
     public static final ModConfigSpec.BooleanValue ENABLE_SHINY_CHARM;
+    public static final ModConfigSpec.BooleanValue GRANT_SHINY_CHARM_ON_ADVANCEMENT;
     public static final ModConfigSpec.DoubleValue SHINY_CHARM_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue SHINY_CHARM_DEX_THRESHOLD;
 
     // EXP Charm
     public static final ModConfigSpec.BooleanValue ENABLE_EXP_CHARM;
+    public static final ModConfigSpec.BooleanValue GRANT_EXP_CHARM_ON_ADVANCEMENT;
     public static final ModConfigSpec.DoubleValue EXP_CHARM_MULTIPLIER;
 
     // Catch Charm
     public static final ModConfigSpec.BooleanValue ENABLE_CATCH_CHARM;
+    public static final ModConfigSpec.BooleanValue GRANT_CATCH_CHARM_ON_ADVANCEMENT;
     public static final ModConfigSpec.DoubleValue CATCH_CHARM_MULTIPLIER;
 
     // Multi Charm
@@ -62,6 +65,28 @@ public class Config {
     public static final ModConfigSpec.BooleanValue ENABLE_ROCK_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_STEEL_CHARM;
     public static final ModConfigSpec.BooleanValue ENABLE_WATER_CHARM;
+
+    // Individual type charm grant on advancement toggles
+    private static final Map<CharmType, ModConfigSpec.BooleanValue> TYPE_CHARM_GRANT_MAP =
+            new EnumMap<>(CharmType.class);
+    public static final ModConfigSpec.BooleanValue GRANT_BUG_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_DARK_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_DRAGON_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_ELECTRIC_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_FAIRY_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_FIGHTING_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_FIRE_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_FLYING_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_GHOST_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_GRASS_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_GROUND_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_ICE_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_NORMAL_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_POISON_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_PSYCHIC_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_ROCK_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_STEEL_CHARM_ON_ADVANCEMENT;
+    public static final ModConfigSpec.BooleanValue GRANT_WATER_CHARM_ON_ADVANCEMENT;
 
     // EV and IV increase amounts
     public static final ModConfigSpec.IntValue SUPER_EV_INCREASE_AMOUNT;
@@ -96,6 +121,10 @@ public class Config {
         ENABLE_ALL_TYPE_CHARMS = BUILDER
                 .comment("Master toggle for all type charms (overrides individual enables)")
                 .define("enable_all_type_charms", true);
+        GRANT_CHARM_ON_ADVANCEMENT = BUILDER
+                .comment("If true, charms will be granted when a charm related advancement is earned")
+                .comment("Acts as a master toggle — if false, no charms are granted regardless of per-type settings")
+                .define("grant_charm_on_advancement", true);
         BUILDER.pop();
 
         BUILDER.push("Training Items");
@@ -137,14 +166,15 @@ public class Config {
         CHARM_EFFECT_REQUIRES_ADVANCEMENT = BUILDER
                 .comment("If true, charms have no effect until the player earns the corresponding advancement")
                 .define("charm_effect_requires_advancement", true);
-        GRANT_CHARM_ON_ADVANCEMENT = BUILDER
-                .comment("If true, charms will be granted when a charm related advancement is earned")
-                .define("grant_charm_on_advancement", true);
 
         BUILDER.push("Shiny Charm");
         ENABLE_SHINY_CHARM = BUILDER
                 .comment("Enable Shiny Charm item")
                 .define("enable_shiny_charm", true);
+        GRANT_SHINY_CHARM_ON_ADVANCEMENT = BUILDER
+                .comment("If true, the Shiny Charm will be given as an item reward when its advancement is earned")
+                .comment("Has no effect if grant_charm_on_advancement is false")
+                .define("grant_shiny_charm_on_advancement", true);
         SHINY_CHARM_MULTIPLIER = BUILDER
                 .comment("Shiny Charm multiplier (default: 3.0 = 3x better shiny odds)")
                 .comment("Cobblemon base rate: 1 in 8192")
@@ -161,6 +191,10 @@ public class Config {
         ENABLE_EXP_CHARM = BUILDER
                 .comment("Enable EXP Charm item")
                 .define("enable_exp_charm", true);
+        GRANT_EXP_CHARM_ON_ADVANCEMENT = BUILDER
+                .comment("If true, the EXP Charm will be given as an item reward when its advancement is earned")
+                .comment("Has no effect if grant_charm_on_advancement is false")
+                .define("grant_exp_charm_on_advancement", true);
         EXP_CHARM_MULTIPLIER = BUILDER
                 .comment("Experience multiplier when EXP Charm is equipped (default: 1.5 = 50% more EXP)")
                 .defineInRange("exp_charm_multiplier", 1.5, 1.0, 10.0);
@@ -170,11 +204,14 @@ public class Config {
         ENABLE_CATCH_CHARM = BUILDER
                 .comment("Enable Catch Charm item")
                 .define("enable_catch_charm", true);
+        GRANT_CATCH_CHARM_ON_ADVANCEMENT = BUILDER
+                .comment("If true, the Catch Charm will be given as an item reward when its advancement is earned")
+                .comment("Has no effect if grant_charm_on_advancement is false")
+                .define("grant_catch_charm_on_advancement", true);
         CATCH_CHARM_MULTIPLIER = BUILDER
                 .comment("Catch rate multiplier when Catch Charm is equipped (default: 2.0 = double catch rate)")
                 .defineInRange("catch_charm_multiplier", 2.0, 1.0, 10.0);
         BUILDER.pop();
-
 
         BUILDER.push("Multi Charm");
         ENABLE_MULTI_CHARM = BUILDER
@@ -200,6 +237,7 @@ public class Config {
                 .comment("Example: 10.0 means ~10 Fire (105 implemented), ~18 Water (182 implemented), ~7 Ice (70 implemented)")
                 .defineInRange("type_charm_threshold_percentage", 80.0, 0.1, 100.0);
 
+        BUILDER.push("Enable");
         ENABLE_BUG_CHARM      = BUILDER.define("enable_bug_charm", true);
         ENABLE_DARK_CHARM     = BUILDER.define("enable_dark_charm", true);
         ENABLE_DRAGON_CHARM   = BUILDER.define("enable_dragon_charm", true);
@@ -218,6 +256,28 @@ public class Config {
         ENABLE_ROCK_CHARM     = BUILDER.define("enable_rock_charm", true);
         ENABLE_STEEL_CHARM    = BUILDER.define("enable_steel_charm", true);
         ENABLE_WATER_CHARM    = BUILDER.define("enable_water_charm", true);
+        BUILDER.pop();
+
+        BUILDER.push("Grant On Advancement");
+        GRANT_BUG_CHARM_ON_ADVANCEMENT      = BUILDER.define("grant_bug_charm_on_advancement", true);
+        GRANT_DARK_CHARM_ON_ADVANCEMENT     = BUILDER.define("grant_dark_charm_on_advancement", true);
+        GRANT_DRAGON_CHARM_ON_ADVANCEMENT   = BUILDER.define("grant_dragon_charm_on_advancement", true);
+        GRANT_ELECTRIC_CHARM_ON_ADVANCEMENT = BUILDER.define("grant_electric_charm_on_advancement", true);
+        GRANT_FAIRY_CHARM_ON_ADVANCEMENT    = BUILDER.define("grant_fairy_charm_on_advancement", true);
+        GRANT_FIGHTING_CHARM_ON_ADVANCEMENT = BUILDER.define("grant_fighting_charm_on_advancement", true);
+        GRANT_FIRE_CHARM_ON_ADVANCEMENT     = BUILDER.define("grant_fire_charm_on_advancement", true);
+        GRANT_FLYING_CHARM_ON_ADVANCEMENT   = BUILDER.define("grant_flying_charm_on_advancement", true);
+        GRANT_GHOST_CHARM_ON_ADVANCEMENT    = BUILDER.define("grant_ghost_charm_on_advancement", true);
+        GRANT_GRASS_CHARM_ON_ADVANCEMENT    = BUILDER.define("grant_grass_charm_on_advancement", true);
+        GRANT_GROUND_CHARM_ON_ADVANCEMENT   = BUILDER.define("grant_ground_charm_on_advancement", true);
+        GRANT_ICE_CHARM_ON_ADVANCEMENT      = BUILDER.define("grant_ice_charm_on_advancement", true);
+        GRANT_NORMAL_CHARM_ON_ADVANCEMENT   = BUILDER.define("grant_normal_charm_on_advancement", true);
+        GRANT_POISON_CHARM_ON_ADVANCEMENT   = BUILDER.define("grant_poison_charm_on_advancement", true);
+        GRANT_PSYCHIC_CHARM_ON_ADVANCEMENT  = BUILDER.define("grant_psychic_charm_on_advancement", true);
+        GRANT_ROCK_CHARM_ON_ADVANCEMENT     = BUILDER.define("grant_rock_charm_on_advancement", true);
+        GRANT_STEEL_CHARM_ON_ADVANCEMENT    = BUILDER.define("grant_steel_charm_on_advancement", true);
+        GRANT_WATER_CHARM_ON_ADVANCEMENT    = BUILDER.define("grant_water_charm_on_advancement", true);
+        BUILDER.pop();
 
         TYPE_CHARM_CONFIG_MAP.put(CharmType.NORMAL,   ENABLE_NORMAL_CHARM);
         TYPE_CHARM_CONFIG_MAP.put(CharmType.FIRE,     ENABLE_FIRE_CHARM);
@@ -238,6 +298,25 @@ public class Config {
         TYPE_CHARM_CONFIG_MAP.put(CharmType.STEEL,    ENABLE_STEEL_CHARM);
         TYPE_CHARM_CONFIG_MAP.put(CharmType.FAIRY,    ENABLE_FAIRY_CHARM);
 
+        TYPE_CHARM_GRANT_MAP.put(CharmType.NORMAL,   GRANT_NORMAL_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.FIRE,     GRANT_FIRE_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.WATER,    GRANT_WATER_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.ELECTRIC, GRANT_ELECTRIC_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.GRASS,    GRANT_GRASS_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.ICE,      GRANT_ICE_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.FIGHTING, GRANT_FIGHTING_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.POISON,   GRANT_POISON_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.GROUND,   GRANT_GROUND_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.FLYING,   GRANT_FLYING_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.PSYCHIC,  GRANT_PSYCHIC_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.BUG,      GRANT_BUG_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.ROCK,     GRANT_ROCK_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.GHOST,    GRANT_GHOST_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.DRAGON,   GRANT_DRAGON_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.DARK,     GRANT_DARK_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.STEEL,    GRANT_STEEL_CHARM_ON_ADVANCEMENT);
+        TYPE_CHARM_GRANT_MAP.put(CharmType.FAIRY,    GRANT_FAIRY_CHARM_ON_ADVANCEMENT);
+
         BUILDER.pop(); // Type Charms
         BUILDER.pop(); // Charms
 
@@ -250,6 +329,15 @@ public class Config {
     public static boolean isTypeCharmEnabled(CharmType type) {
         if (!ENABLE_ALL_TYPE_CHARMS.get()) return false;
         ModConfigSpec.BooleanValue value = TYPE_CHARM_CONFIG_MAP.get(type);
+        return value == null || value.get();
+    }
+
+    /**
+     * Returns true if the global grant toggle and the per-type grant toggle are both enabled.
+     */
+    public static boolean isTypeCharmGrantedOnAdvancement(CharmType type) {
+        if (!GRANT_CHARM_ON_ADVANCEMENT.get()) return false;
+        ModConfigSpec.BooleanValue value = TYPE_CHARM_GRANT_MAP.get(type);
         return value == null || value.get();
     }
 
