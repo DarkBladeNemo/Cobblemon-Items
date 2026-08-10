@@ -24,6 +24,7 @@ repositories {
     }
     mavenCentral()
     maven { url 'https://maven.impactdev.net/repository/development/' } // Cobblemon
+    maven { url 'https://maven.impactdev.net/repository/snapshots/'     } // Cobblemon Snapshots
     maven { url 'https://thedarkcolour.github.io/KotlinForForge/'     } // KotlinForForge
     maven {
         name = 'Curios'
