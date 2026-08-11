@@ -89,7 +89,7 @@ public class TypeCharmAdvancementEvents {
     }
 
     private static void handlePokedexChanged(PokedexDataChangedEvent.Post event) {
-        if (event.getKnowledge() != PokedexEntryProgress.CAUGHT) return;
+        if (event.getKnowledge() != PokedexEntryProgress.OWNED) return;
         if (currentServer == null) return;
 
         ServerPlayer player = currentServer.getPlayerList().getPlayer(event.getPlayerUUID());

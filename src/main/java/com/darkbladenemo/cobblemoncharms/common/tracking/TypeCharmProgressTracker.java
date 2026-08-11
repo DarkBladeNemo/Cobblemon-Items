@@ -113,7 +113,7 @@ public class TypeCharmProgressTracker {
             String speciesPath
     ) {
         FormDexRecord formRecord = speciesRecord.getFormRecord(form.getName());
-        if (formRecord == null || formRecord.getKnowledge() != PokedexEntryProgress.CAUGHT) return;
+        if (formRecord == null || formRecord.getKnowledge() != PokedexEntryProgress.OWNED) return;
 
         String key = speciesPath + ":" + form.getName();
         for (CharmType type : getTypesFromForm(form)) {

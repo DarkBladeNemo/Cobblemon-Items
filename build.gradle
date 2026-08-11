@@ -16,6 +16,8 @@ repositories {
 
     // Cobblemon
     maven { url 'https://maven.impactdev.net/repository/development/' }
+    // Cobblemon Snapshots
+    maven { url 'https://maven.impactdev.net/repository/snapshots/'     }
 
     // JEI (optional)
     maven {

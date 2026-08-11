@@ -1,6 +1,5 @@
 package com.darkbladenemo.cobblemoncharms.common.influence;
 
-import com.cobblemon.mod.common.api.spawning.SpawnBucket;
 import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail;
 import com.cobblemon.mod.common.api.spawning.detail.SpawnAction;
 import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
@@ -180,7 +179,6 @@ public class TypeCharmInfluence implements SpawningInfluence {
 
     @Override public void affectAction(@NotNull SpawnAction<?> action) {}
     @Override public void affectSpawn(@NotNull SpawnAction<?> action, @NotNull Entity entity) {}
-    @Override public void affectBucketWeights(@NotNull Map<SpawnBucket, Float> bucketWeights) {}
 
     @Override
     public boolean isAllowedPosition(@NotNull ServerLevel world, @NotNull BlockPos pos,

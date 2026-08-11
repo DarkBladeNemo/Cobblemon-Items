@@ -65,8 +65,8 @@ public class PokedexRegionUtils {
 
             implemented++;
             PokedexEntryProgress progress = pokedexData.getHighestKnowledgeFor(entry);
-            if (progress == PokedexEntryProgress.CAUGHT) caught++;
-            else if (progress == PokedexEntryProgress.ENCOUNTERED) seen++;
+            if (progress == PokedexEntryProgress.OWNED) caught++;
+            else if (progress == PokedexEntryProgress.SEEN) seen++;
         }
 
         return new RegionProgress(region, implemented, seen, caught);
