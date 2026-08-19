@@ -5,7 +5,7 @@ import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
 import com.darkbladenemo.cobblemoncharms.common.util.CharmMultiplierUtils;
 
-public class CharmEvents {
+public class ShinyCharmEvents {
 
     public static void register() {
         CobblemonEvents.SHINY_CHANCE_CALCULATION.subscribe(Priority.NORMAL, event -> {

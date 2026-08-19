@@ -12,7 +12,7 @@ import com.darkbladenemo.cobblemoncharms.common.component.TypeCharmData;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.TypeCharm;
-import com.darkbladenemo.cobblemoncharms.common.util.cobblemoncharmsUtils;
+import com.darkbladenemo.cobblemoncharms.common.util.CobblemonCharmsUtils;
 import com.darkbladenemo.cobblemoncharms.init.ModDataComponents;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import dev.emi.trinkets.api.TrinketInventory;
@@ -63,13 +63,13 @@ public class TypeCharmInfluence implements SpawningInfluence {
         if (playerPos.distSqr(spawnPos) > cachedRadiusSq) return weight;
 
         com.cobblemon.mod.common.pokemon.Species species =
-                cobblemoncharmsUtils.resolveSpecies(pokemonDetail);
+                CobblemonCharmsUtils.resolveSpecies(pokemonDetail);
         if (species == null) return weight;
 
         final float[] totalMatchBonus   = {0.0f};
         final boolean[] matchesAnyCharm = {false};
 
-        cobblemoncharmsUtils.forEachType(species, elementalType -> {
+        CobblemonCharmsUtils.forEachType(species, elementalType -> {
             CharmType charmType = CharmType.fromElementalType(elementalType);
             if (charmType == null) return;
             Float multiplier = charmMultipliers.get(charmType);

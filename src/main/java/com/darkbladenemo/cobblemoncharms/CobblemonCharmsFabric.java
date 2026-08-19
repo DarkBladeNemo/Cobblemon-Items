@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.darkbladenemo.cobblemoncharms.common.command.CCharmsCommand;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.common.event.*;
+import com.darkbladenemo.cobblemoncharms.common.influence.ShinyCharmInfluence;
 import com.darkbladenemo.cobblemoncharms.common.influence.TypeCharmInfluence;
 import com.darkbladenemo.cobblemoncharms.init.ModDataComponents;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
@@ -38,7 +39,7 @@ public class CobblemonCharmsFabric implements ModInitializer {
         ModNetworking.registerServer();
 
         // Register Cobblemon/Charm events
-        CharmEvents.register();
+        ShinyCharmEvents.register();
         ExpCharmEvents.register();
         CatchCharmEvents.register();
         AdvancementRewardHandler.register();
@@ -53,8 +54,9 @@ public class CobblemonCharmsFabric implements ModInitializer {
                 CCharmsCommand.register(dispatcher)
         );
 
-        // Register type charm spawning influence
+        // Register charm spawning influence
         PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(TypeCharmInfluence::new);
+        PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(ShinyCharmInfluence::new);
 
         // Register creative tab entries
         registerCreativeTabEntries();
