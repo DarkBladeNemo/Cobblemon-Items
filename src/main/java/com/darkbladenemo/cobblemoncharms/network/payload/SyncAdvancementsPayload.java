@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.network.payload;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -18,7 +18,7 @@ import java.util.List;
 public record SyncAdvancementsPayload(List<ResourceLocation> earnedIds) implements CustomPacketPayload {
 
     public static final Type<SyncAdvancementsPayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "sync_advancements"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "sync_advancements"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncAdvancementsPayload> STREAM_CODEC =
             StreamCodec.of(

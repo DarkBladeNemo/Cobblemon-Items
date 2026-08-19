@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.client.gui
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod
 import com.darkbladenemo.cobblemoncharms.client.util.ClientTooltipUtils
 import com.darkbladenemo.cobblemoncharms.common.component.MultiCharmData
 import com.darkbladenemo.cobblemoncharms.common.config.Config
@@ -32,19 +32,19 @@ class MultiCharmButton(
 
     companion object {
         private val TEXTURE_DISABLED = ResourceLocation.fromNamespaceAndPath(
-            cobblemoncharmsMod.MOD_ID,
+            CobblemonCharmsMod.MOD_ID,
             "textures/gui/multicharm_button_disabled.png"
         )
         private val TEXTURE_ENABLED = ResourceLocation.fromNamespaceAndPath(
-            cobblemoncharmsMod.MOD_ID,
+            CobblemonCharmsMod.MOD_ID,
             "textures/gui/multicharm_button_effect_enabled.png"
         )
         private val TEXTURE_EFFECT_DISABLED = ResourceLocation.fromNamespaceAndPath(
-            cobblemoncharmsMod.MOD_ID,
+            CobblemonCharmsMod.MOD_ID,
             "textures/gui/multicharm_button_effect_disabled.png"
         )
         private val TEXTURE_LOCKED = ResourceLocation.fromNamespaceAndPath(
-            cobblemoncharmsMod.MOD_ID,
+            CobblemonCharmsMod.MOD_ID,
             "textures/gui/multicharm_button_locked.png"
         )
     }
@@ -102,7 +102,7 @@ class MultiCharmScreen(
     private val fromCurio: Boolean = false
 ) : Screen(Component.translatable("gui.cobblemoncharms.multi_charm.title")) {
 
-    private val backgroundTexture = ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "textures/gui/multi_charm.png")
+    private val backgroundTexture = ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "textures/gui/multi_charm.png")
     private val backgroundWidth = 176
     private val backgroundHeight = 264
 

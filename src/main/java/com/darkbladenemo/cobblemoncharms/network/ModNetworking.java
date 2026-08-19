@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.network;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.client.network.ClientPacketHandlers;
 import com.darkbladenemo.cobblemoncharms.common.component.MultiCharmData;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import top.theillusivec4.curios.api.CuriosApi;
 
-@EventBusSubscriber(modid = cobblemoncharmsMod.MOD_ID)
+@EventBusSubscriber(modid = CobblemonCharmsMod.MOD_ID)
 public class ModNetworking {
 
     @SubscribeEvent

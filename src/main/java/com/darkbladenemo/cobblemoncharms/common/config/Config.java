@@ -21,6 +21,7 @@ public class Config {
 
     // Shiny Charm
     public static final ModConfigSpec.BooleanValue ENABLE_SHINY_CHARM;
+    public static final ModConfigSpec.BooleanValue SHINY_CHARM_AFFECTS_HONEY_LOG;
     public static final ModConfigSpec.BooleanValue GRANT_SHINY_CHARM_ON_ADVANCEMENT;
     public static final ModConfigSpec.DoubleValue SHINY_CHARM_MULTIPLIER;
     public static final ModConfigSpec.DoubleValue SHINY_CHARM_DEX_THRESHOLD;
@@ -171,6 +172,9 @@ public class Config {
         ENABLE_SHINY_CHARM = BUILDER
                 .comment("Enable Shiny Charm item")
                 .define("enable_shiny_charm", true);
+        SHINY_CHARM_AFFECTS_HONEY_LOG = BUILDER
+                .comment("If true, the Shiny Charm also boosts shiny odds from honey-slathered saccharine logs")
+                .define("shiny_charm_affects_honey_log", true);
         GRANT_SHINY_CHARM_ON_ADVANCEMENT = BUILDER
                 .comment("If true, the Shiny Charm will be given as an item reward when its advancement is earned")
                 .comment("Has no effect if grant_charm_on_advancement is false")

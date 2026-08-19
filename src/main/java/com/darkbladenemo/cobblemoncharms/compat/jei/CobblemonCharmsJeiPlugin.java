@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.compat.jei;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.common.component.MultiCharmData;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.init.ModDataComponents;
@@ -28,10 +28,10 @@ import java.util.List;
  * One entry is registered per type charm: Empty MultiCharm + TypeCharm → MultiCharm with that type.
  */
 @JeiPlugin
-public class cobblemoncharmsJeiPlugin implements IModPlugin {
+public class CobblemonCharmsJeiPlugin implements IModPlugin {
 
     private static final ResourceLocation PLUGIN_ID =
-            ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "jei_plugin");
+            ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "jei_plugin");
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
@@ -65,7 +65,7 @@ public class cobblemoncharmsJeiPlugin implements IModPlugin {
             );
 
             ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(
-                    cobblemoncharmsMod.MOD_ID,
+                    CobblemonCharmsMod.MOD_ID,
                     "multi_charm_combine_" + type.getTranslationKey()
             );
             multiCharmCombineRecipes.add(new RecipeHolder<>(recipeId, recipe));

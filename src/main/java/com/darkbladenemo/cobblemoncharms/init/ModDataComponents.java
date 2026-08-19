@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.init;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.common.component.*;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class ModDataComponents {
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
-            DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, cobblemoncharmsMod.MOD_ID);
+            DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, CobblemonCharmsMod.MOD_ID);
 
     public static final Supplier<DataComponentType<ExpCharmData>> EXP_CHARM_DATA =
             DATA_COMPONENTS.register("exp_charm_data", () ->

@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.client.keybind;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import com.darkbladenemo.cobblemoncharms.network.payload.OpenMultiCharmFromCurioPayload;
 import net.minecraft.client.Minecraft;
@@ -16,7 +16,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import java.util.ArrayList;
 import java.util.List;
 
-@EventBusSubscriber(modid = cobblemoncharmsMod.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = CobblemonCharmsMod.MOD_ID, value = Dist.CLIENT)
 public class KeyInputHandler {
 
     @SubscribeEvent

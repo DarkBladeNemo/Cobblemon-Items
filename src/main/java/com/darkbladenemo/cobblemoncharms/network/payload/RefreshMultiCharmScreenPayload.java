@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.network.payload;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.common.component.MultiCharmData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record RefreshMultiCharmScreenPayload(MultiCharmData data) implements CustomPacketPayload {
     public static final Type<RefreshMultiCharmScreenPayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "refresh_multi_charm_screen"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "refresh_multi_charm_screen"));
 
     public static final StreamCodec<ByteBuf, RefreshMultiCharmScreenPayload> STREAM_CODEC =
             StreamCodec.composite(

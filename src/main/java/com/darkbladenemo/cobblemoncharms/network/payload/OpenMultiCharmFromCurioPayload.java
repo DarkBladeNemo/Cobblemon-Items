@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.network.payload;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record OpenMultiCharmFromCurioPayload(int slotIndex) implements CustomPacketPayload {
     public static final Type<OpenMultiCharmFromCurioPayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "open_multi_charm_from_curio"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "open_multi_charm_from_curio"));
 
     public static final StreamCodec<ByteBuf, OpenMultiCharmFromCurioPayload> STREAM_CODEC =
             StreamCodec.composite(

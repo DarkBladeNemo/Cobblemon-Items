@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.network.payload;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -14,7 +14,7 @@ public record ToggleMultiCharmTypePayload(
         boolean fromCurio
 ) implements CustomPacketPayload {
     public static final Type<ToggleMultiCharmTypePayload> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "toggle_multi_charm_type"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "toggle_multi_charm_type"));
 
     public static final StreamCodec<ByteBuf, ToggleMultiCharmTypePayload> STREAM_CODEC =
             StreamCodec.composite(

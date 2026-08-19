@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.common.event;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.advancement.ModAdvancement;
 import com.darkbladenemo.cobblemoncharms.network.ModNetworking;
 import com.darkbladenemo.cobblemoncharms.network.payload.SyncAdvancementsPayload;
@@ -20,7 +20,7 @@ import java.util.List;
  * Keeps the client's advancement cache and config values in sync.
  * Sends a full snapshot on login and after each mod advancement is earned.
  */
-@EventBusSubscriber(modid = cobblemoncharmsMod.MOD_ID)
+@EventBusSubscriber(modid = CobblemonCharmsMod.MOD_ID)
 public class AdvancementSyncEvents {
 
     @SubscribeEvent
@@ -36,7 +36,7 @@ public class AdvancementSyncEvents {
     public static void onAdvancementEarned(AdvancementEvent.AdvancementEarnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             ResourceLocation id = event.getAdvancement().id();
-            if (id.getNamespace().equals(cobblemoncharmsMod.MOD_ID)) {
+            if (id.getNamespace().equals(CobblemonCharmsMod.MOD_ID)) {
                 PacketDistributor.sendToPlayer(player, buildSnapshot(player));
             }
         }

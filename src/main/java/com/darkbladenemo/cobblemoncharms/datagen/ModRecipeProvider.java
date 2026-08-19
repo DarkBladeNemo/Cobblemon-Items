@@ -2,7 +2,7 @@ package com.darkbladenemo.cobblemoncharms.datagen;
 
 import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.item.interactive.HyperTrainingItem;
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.common.condition.ConfigCondition;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
@@ -77,7 +77,7 @@ public class ModRecipeProvider extends RecipeProvider {
                         new AndCondition(List.of(
                                 new ConfigCondition("enable_all_iv_items"),
                                 new ConfigCondition("enable_gold_bottle_cap")
-                        ))), ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "candies/gold_bottle_cap"));
+                        ))), ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "candies/gold_bottle_cap"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SHINY_CHARM.get())
                 .pattern("ACD")
@@ -89,7 +89,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('D', Items.PRISMARINE_CRYSTALS)
                 .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(Items.DIAMOND))
                 .save(withCondition(output, new ConfigCondition("enable_shiny_charm")),
-                        ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "charms/shiny_charm"));
+                        ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/shiny_charm"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.EXP_CHARM.get())
                 .pattern("ABE")
@@ -102,7 +102,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('D', Items.BLUE_DYE)
                 .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
                 .save(withCondition(output, new ConfigCondition("enable_exp_charm")),
-                        ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "charms/exp_charm"));
+                        ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/exp_charm"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CATCH_CHARM.get())
                 .pattern("ADA")
@@ -116,7 +116,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('F', CobblemonItems.DRAGON_GEM)
                 .unlockedBy("has_poke_ball", InventoryChangeTrigger.TriggerInstance.hasItems(CobblemonItems.POKE_BALL))
                 .save(withCondition(output, new ConfigCondition("enable_catch_charm")),
-                        ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "charms/catch_charm"));
+                        ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/catch_charm"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MULTI_CHARM.get())
                 .pattern("GDG")
@@ -130,7 +130,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('D', CobblemonItems.GHOST_GEM)
                 .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
                 .save(withCondition(output, new ConfigCondition("enable_multi_charm")),
-                        ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "charms/multi_charm"));
+                        ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/multi_charm"));
 
         TYPE_MATERIALS.forEach((type, material) -> {
             var charmHolder = ModItems.TYPE_CHARMS.get(type);
@@ -149,7 +149,7 @@ public class ModRecipeProvider extends RecipeProvider {
                             new AndCondition(List.of(
                                     new ConfigCondition("enable_all_type_charms"),
                                     new ConfigCondition("enable_" + key + "_charm")
-                            ))), ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, "charms/" + key + "_charm"));
+                            ))), ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/" + key + "_charm"));
         });
     }
 
@@ -157,7 +157,7 @@ public class ModRecipeProvider extends RecipeProvider {
                                  String configKey, Item material,
                                  Item power) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
-                cobblemoncharmsMod.MOD_ID, "vitamins/" + BuiltInRegistries.ITEM.getKey(result).getPath());
+                CobblemonCharmsMod.MOD_ID, "vitamins/" + BuiltInRegistries.ITEM.getKey(result).getPath());
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .pattern("MBM")
                 .pattern("BPB")
@@ -176,7 +176,7 @@ public class ModRecipeProvider extends RecipeProvider {
     private static void ivRecipe(RecipeOutput output, Item result,
                                  String configKey, Item material, HyperTrainingItem candyItem) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
-                cobblemoncharmsMod.MOD_ID, "candies/" + BuiltInRegistries.ITEM.getKey(result).getPath());
+                CobblemonCharmsMod.MOD_ID, "candies/" + BuiltInRegistries.ITEM.getKey(result).getPath());
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .pattern("BMB")
                 .pattern("MNM")

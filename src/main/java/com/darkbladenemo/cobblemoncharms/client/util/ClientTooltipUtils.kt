@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.client.util
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod
 import com.darkbladenemo.cobblemoncharms.common.config.Config
 import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType
 import net.minecraft.ChatFormatting
@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation
 object ClientTooltipUtils {
 
     fun hasAdvancement(path: String): Boolean {
-        val id = ResourceLocation.fromNamespaceAndPath(cobblemoncharmsMod.MOD_ID, path)
+        val id = ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, path)
         return ClientAdvancementCache.has(id)
     }
 

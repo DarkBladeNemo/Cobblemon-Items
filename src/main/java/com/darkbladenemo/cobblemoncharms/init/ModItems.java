@@ -1,7 +1,7 @@
 package com.darkbladenemo.cobblemoncharms.init;
 
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.common.item.EVBoostItem;
 import com.darkbladenemo.cobblemoncharms.common.item.IVBoostItem;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
-            DeferredRegister.createItems(cobblemoncharmsMod.MOD_ID);
+            DeferredRegister.createItems(CobblemonCharmsMod.MOD_ID);
 
     // Map to store type charms
     public static final Map<CharmType, DeferredHolder<Item, TypeCharm>> TYPE_CHARMS =

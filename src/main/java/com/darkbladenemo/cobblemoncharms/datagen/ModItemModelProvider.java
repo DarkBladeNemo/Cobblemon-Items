@@ -1,6 +1,6 @@
 package com.darkbladenemo.cobblemoncharms.datagen;
 
-import com.darkbladenemo.cobblemoncharms.cobblemoncharmsMod;
+import com.darkbladenemo.cobblemoncharms.CobblemonCharmsMod;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import net.minecraft.data.PackOutput;
@@ -10,7 +10,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 public class ModItemModelProvider extends ItemModelProvider {
 
     public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, cobblemoncharmsMod.MOD_ID, existingFileHelper);
+        super(output, CobblemonCharmsMod.MOD_ID, existingFileHelper);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-public class cobblemoncharmsUtils {
+public class CobblemonCharmsUtils {
     /**
      * Cache for species resolution to avoid repeated registry lookups.
      * Species definitions don't change at runtime, so this is safe.

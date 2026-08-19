@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.darkbladenemo.cobblemoncharms.command.CCharmsCommand;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.common.event.*;
+import com.darkbladenemo.cobblemoncharms.common.influence.ShinyCharmInfluence;
 import com.darkbladenemo.cobblemoncharms.common.influence.TypeCharmInfluence;
 import com.darkbladenemo.cobblemoncharms.init.ModConditions;
 import com.darkbladenemo.cobblemoncharms.init.ModDataComponents;
@@ -25,11 +26,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Map;
 
-@Mod(cobblemoncharmsMod.MOD_ID)
-public class cobblemoncharmsMod {
+@Mod(CobblemonCharmsMod.MOD_ID)
+public class CobblemonCharmsMod {
     public static final String MOD_ID = "cobblemoncharms";
 
-    public cobblemoncharmsMod(IEventBus modEventBus, ModContainer modContainer) {
+    public CobblemonCharmsMod(IEventBus modEventBus, ModContainer modContainer) {
         // Register config
         ModConfigSpec configSpec = Config.SPEC;
         modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, configSpec);
@@ -46,7 +47,7 @@ public class cobblemoncharmsMod {
         ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
 
         // Register events
-        CharmEvents.register();
+        ShinyCharmEvents.register();
         ExpCharmEvents.register();
         CatchCharmEvents.register();
         AdvancementRewardHandler.register();
@@ -54,10 +55,11 @@ public class cobblemoncharmsMod {
 
         // Register tick manager
         TickManager.register(modEventBus);
-        NeoForge.EVENT_BUS.addListener(cobblemoncharmsMod::onRegisterCommands);
+        NeoForge.EVENT_BUS.addListener(CobblemonCharmsMod::onRegisterCommands);
 
-        // Register type charm influence
+        // Register charm influence
         PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(TypeCharmInfluence::new);
+        PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(ShinyCharmInfluence::new);
 
         // Register a creative tab addition
         modEventBus.addListener(this::addCreative);

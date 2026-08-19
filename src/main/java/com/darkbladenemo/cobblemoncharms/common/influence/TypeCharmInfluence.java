@@ -14,7 +14,7 @@ import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.TypeCharm;
 import com.darkbladenemo.cobblemoncharms.init.ModDataComponents;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
-import com.darkbladenemo.cobblemoncharms.common.util.cobblemoncharmsUtils;
+import com.darkbladenemo.cobblemoncharms.common.util.CobblemonCharmsUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -72,7 +72,7 @@ public class TypeCharmInfluence implements SpawningInfluence {
         }
 
         com.cobblemon.mod.common.pokemon.Species species =
-                cobblemoncharmsUtils.resolveSpecies(pokemonDetail);
+                CobblemonCharmsUtils.resolveSpecies(pokemonDetail);
         if (species == null) {
             return weight;
         }
@@ -80,7 +80,7 @@ public class TypeCharmInfluence implements SpawningInfluence {
         final float[] totalMatchBonus = {0.0f};
         final boolean[] matchesAnyCharm = {false};
 
-        cobblemoncharmsUtils.forEachType(species, elementalType -> {
+        CobblemonCharmsUtils.forEachType(species, elementalType -> {
             CharmType charmType = CharmType.fromElementalType(elementalType);
             if (charmType == null) return;
 
