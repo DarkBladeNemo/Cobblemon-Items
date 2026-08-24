@@ -26,16 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manually registers the MultiCharm combination recipes with JEI, since the custom
+ * recipe type has no fixed pattern and can't be auto-discovered.
+ * <p>
+ * One entry is registered per enabled type charm: Empty MultiCharm + TypeCharm → MultiCharm
+ * with that type. Skips the whole thing if Multi-Charm is disabled, and skips individual
+ * types that are disabled in config, so JEI doesn't advertise recipes players can't use.
+ */
 @JeiPlugin
 public class CobblemonCharmsJeiPlugin implements IModPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("CobblemonCharmsJEI");
     private static final ResourceLocation PLUGIN_ID =
             ResourceLocation.fromNamespaceAndPath(CobblemonCharmsFabric.MOD_ID, "jei_plugin");
-
-    static {
-        LOGGER.info("CobblemonCharmsJeiPlugin class loaded!");
-    }
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
@@ -44,18 +48,15 @@ public class CobblemonCharmsJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        LOGGER.info("registerRecipes called for CobblemonCharms!");
+        if (!Config.ENABLE_MULTI_CHARM.get()) return;
 
         List<RecipeHolder<net.minecraft.world.item.crafting.CraftingRecipe>> multiCharmCombineRecipes = new ArrayList<>();
 
-        LOGGER.info("TYPE_CHARMS size: {}", ModItems.TYPE_CHARMS.size());
-
-        int count = 0;
         for (Map.Entry<CharmType, TypeCharm> entry : ModItems.TYPE_CHARMS.entrySet()) {
             CharmType charmType = entry.getKey();
-            TypeCharm typeCharmItem = entry.getValue();
+            if (!Config.isTypeCharmEnabled(charmType)) continue;
 
-            LOGGER.info("Creating recipe for type: {}", charmType.getTranslationKey());
+            TypeCharm typeCharmItem = entry.getValue();
 
             ItemStack emptyMultiCharm = new ItemStack(ModItems.MULTI_CHARM);
             emptyMultiCharm.set(ModDataComponents.MULTI_CHARM_DATA, MultiCharmData.empty());
@@ -83,19 +84,14 @@ public class CobblemonCharmsJeiPlugin implements IModPlugin {
                     "multi_charm_combine_" + charmType.getTranslationKey()
             );
 
-            LOGGER.info("Adding recipe: {} with result: {}", recipeId, result.getItem().getDescriptionId());
             multiCharmCombineRecipes.add(new RecipeHolder<>(recipeId, recipe));
-            count++;
         }
 
-        LOGGER.info("Total recipes added: {}", count);
-
         if (!multiCharmCombineRecipes.isEmpty()) {
-            LOGGER.info("Calling registration.addRecipes with {} recipes", multiCharmCombineRecipes.size());
             registration.addRecipes(RecipeTypes.CRAFTING, multiCharmCombineRecipes);
-            LOGGER.info("Registration complete!");
         } else {
-            LOGGER.warn("No recipes were added!");
+            LOGGER.warn("No Multi-Charm combine recipes were registered with JEI " +
+                    "(Multi-Charm and/or all type charms disabled in config?)");
         }
     }
 }

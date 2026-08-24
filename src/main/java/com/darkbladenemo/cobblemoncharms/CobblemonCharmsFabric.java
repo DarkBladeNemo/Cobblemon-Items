@@ -11,6 +11,7 @@ import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import com.darkbladenemo.cobblemoncharms.init.ModRecipes;
 import com.darkbladenemo.cobblemoncharms.network.ModNetworking;
 import com.darkbladenemo.cobblemoncharms.tick.TickManager;
+import com.darkbladenemo.cobblemoncharms.utils.PokedexRegionUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -45,6 +46,7 @@ public class CobblemonCharmsFabric implements ModInitializer {
         AdvancementRewardHandler.register();
         TypeCharmAdvancementEvents.register();
         AdvancementSyncEvents.register();
+        PokedexRegionUtils.register();
 
         // Register tick manager
         TickManager.register();
