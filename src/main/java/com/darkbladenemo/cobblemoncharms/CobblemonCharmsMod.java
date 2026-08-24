@@ -13,6 +13,7 @@ import com.darkbladenemo.cobblemoncharms.init.ModRecipes;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.CharmType;
 import com.darkbladenemo.cobblemoncharms.common.item.charm.TypeCharm;
 import com.darkbladenemo.cobblemoncharms.tick.TickManager;
+import com.darkbladenemo.cobblemoncharms.utils.PokedexRegionUtils;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -52,9 +53,10 @@ public class CobblemonCharmsMod {
         CatchCharmEvents.register();
         AdvancementRewardHandler.register();
         TypeCharmAdvancementEvents.register();
+        PokedexRegionUtils.register();
 
         // Register tick manager
-        TickManager.register(modEventBus);
+        TickManager.register();
         NeoForge.EVENT_BUS.addListener(CobblemonCharmsMod::onRegisterCommands);
 
         // Register charm influence
@@ -63,6 +65,7 @@ public class CobblemonCharmsMod {
 
         // Register a creative tab addition
         modEventBus.addListener(this::addCreative);
+
     }
 
     private static void onRegisterCommands(RegisterCommandsEvent event) {

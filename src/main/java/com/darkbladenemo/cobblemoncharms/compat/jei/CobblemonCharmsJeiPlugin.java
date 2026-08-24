@@ -25,7 +25,9 @@ import java.util.List;
  * Manually registers the MultiCharm combination recipes with JEI, since the custom
  * recipe type has no fixed pattern and can't be auto-discovered.
  * <p>
- * One entry is registered per type charm: Empty MultiCharm + TypeCharm → MultiCharm with that type.
+ * One entry is registered per enabled type charm: Empty MultiCharm + TypeCharm → MultiCharm
+ * with that type. Skips the whole thing if Multi-Charm is disabled, and skips individual
+ * types that are disabled in config, so JEI doesn't advertise recipes players can't use.
  */
 @JeiPlugin
 public class CobblemonCharmsJeiPlugin implements IModPlugin {
@@ -40,9 +42,13 @@ public class CobblemonCharmsJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        if (!Config.ENABLE_MULTI_CHARM.get()) return;
+
         List<RecipeHolder<net.minecraft.world.item.crafting.CraftingRecipe>> multiCharmCombineRecipes = new ArrayList<>();
 
         ModItems.TYPE_CHARMS.forEach((type, deferredCharm) -> {
+            if (!Config.isTypeCharmEnabled(type)) return;
+
             ItemStack emptyMultiCharm = new ItemStack(ModItems.MULTI_CHARM.get());
             emptyMultiCharm.set(ModDataComponents.MULTI_CHARM_DATA.get(), MultiCharmData.empty());
 
