@@ -51,10 +51,10 @@ public class TypeCharmAdvancementEvents {
         });
     }
 
-    private static void checkAllTypeCharmsForPlayer(ServerPlayer player) {
+    public static void checkAllTypeCharmsForPlayer(ServerPlayer player) {
         if (!Config.ENABLE_ALL_TYPE_CHARMS.get()) return;
 
-        var server = ServerLifecycleHooks.getCurrentServer();
+        var server = player.server;
         if (server == null) return;
 
         double threshold = Config.TYPE_CHARM_THRESHOLD_PERCENTAGE.get();
@@ -69,19 +69,15 @@ public class TypeCharmAdvancementEvents {
             AdvancementHolder advancement = ModAdvancement.getTypeCharmAdvancement(server, type);
             if (advancement == null) continue;
 
-            // grantAdvancement returns false if already done — safe to call every login
             boolean granted = AdvancementUtils.grantAdvancement(player, advancement);
             if (!granted) continue;
-
             if (!Config.isTypeCharmGrantedOnAdvancement(type)) continue;
 
             var charmHolder = ModItems.TYPE_CHARMS.get(type);
             if (charmHolder == null) continue;
 
             ItemStack charm = new ItemStack(charmHolder.get());
-            if (!player.getInventory().add(charm)) {
-                player.drop(charm, false);
-            }
+            if (!player.getInventory().add(charm)) player.drop(charm, false);
 
             player.sendSystemMessage(Component.translatable(
                     "message.cobblemoncharms.type_charm_awarded",

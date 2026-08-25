@@ -6,7 +6,9 @@ import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 
@@ -24,38 +26,32 @@ public class AdvancementRewardHandler {
 
         AdvancementHolder earned = event.getAdvancement();
 
-        checkExpCharm(player, earned);
-        checkCatchCharm(player, earned);
-    }
-
-    private static void checkExpCharm(ServerPlayer player, AdvancementHolder earned) {
-        if (!Config.ENABLE_EXP_CHARM.get()) return;
-        if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
-        if (!Config.GRANT_EXP_CHARM_ON_ADVANCEMENT.get()) return;
-
-        AdvancementHolder expCharmAdvancement =
-                ModAdvancement.EXP_CHARM.getAdvancement(player.serverLevel());
-
-        if (expCharmAdvancement == null) return;
-        if (!earned.id().equals(expCharmAdvancement.id())) return;
-
-        giveItem(player, new ItemStack(ModItems.EXP_CHARM.get()),
+        checkCharmReward(player, earned, ModAdvancement.EXP_CHARM, ModItems.EXP_CHARM.get(),
+                Config.ENABLE_EXP_CHARM, Config.GRANT_EXP_CHARM_ON_ADVANCEMENT,
                 "message.cobblemoncharms.exp_charm_awarded");
+
+        checkCharmReward(player, earned, ModAdvancement.CATCH_CHARM, ModItems.CATCH_CHARM.get(),
+                Config.ENABLE_CATCH_CHARM, Config.GRANT_CATCH_CHARM_ON_ADVANCEMENT,
+                "message.cobblemoncharms.catch_charm_awarded");
     }
 
-    private static void checkCatchCharm(ServerPlayer player, AdvancementHolder earned) {
-        if (!Config.ENABLE_CATCH_CHARM.get()) return;
+    private static void checkCharmReward(
+            ServerPlayer player,
+            AdvancementHolder earned,
+            ModAdvancement rewardAdvancement,
+            Item charmItem,
+            ModConfigSpec.BooleanValue enabledToggle,
+            ModConfigSpec.BooleanValue grantToggle,
+            String messageKey
+    ) {
+        if (!enabledToggle.get()) return;
         if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
-        if (!Config.GRANT_CATCH_CHARM_ON_ADVANCEMENT.get()) return;
+        if (!grantToggle.get()) return;
 
-        AdvancementHolder catchCharmAdvancement =
-                ModAdvancement.CATCH_CHARM.getAdvancement(player.serverLevel());
+        AdvancementHolder holder = rewardAdvancement.getAdvancement(player.serverLevel());
+        if (holder == null || !earned.id().equals(holder.id())) return;
 
-        if (catchCharmAdvancement == null) return;
-        if (!earned.id().equals(catchCharmAdvancement.id())) return;
-
-        giveItem(player, new ItemStack(ModItems.CATCH_CHARM.get()),
-                "message.cobblemoncharms.catch_charm_awarded");
+        giveItem(player, new ItemStack(charmItem), messageKey);
     }
 
     private static void giveItem(ServerPlayer player, ItemStack stack, String messageKey) {
