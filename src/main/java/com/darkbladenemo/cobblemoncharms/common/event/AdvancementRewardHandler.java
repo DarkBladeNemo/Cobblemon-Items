@@ -6,6 +6,7 @@ import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -20,21 +21,35 @@ import net.minecraft.world.item.ItemStack;
 public class AdvancementRewardHandler {
 
     public static void register() {
-
     }
 
     public static void checkRewards(ServerPlayer player) {
-        tryGiveExpCharm(player);
-        tryGiveCatchCharm(player);
+        checkCharmReward(player,
+                ModAdvancement.EXP_CHARM, ModAdvancement.EXP_CHARM_REWARDED,
+                ModItems.EXP_CHARM, Config.ENABLE_EXP_CHARM, Config.GRANT_EXP_CHARM_ON_ADVANCEMENT,
+                "message.cobblemoncharms.exp_charm_awarded");
+
+        checkCharmReward(player,
+                ModAdvancement.CATCH_CHARM, ModAdvancement.CATCH_CHARM_REWARDED,
+                ModItems.CATCH_CHARM, Config.ENABLE_CATCH_CHARM, Config.GRANT_CATCH_CHARM_ON_ADVANCEMENT,
+                "message.cobblemoncharms.catch_charm_awarded");
     }
 
-    private static void tryGiveExpCharm(ServerPlayer player) {
-        if (!Config.ENABLE_EXP_CHARM.get()) return;
+    private static void checkCharmReward(
+            ServerPlayer player,
+            ModAdvancement earnedAdvancement,
+            ModAdvancement rewardedAdvancement,
+            Item charmItem,
+            Config.BooleanValue enabledToggle,
+            Config.BooleanValue grantToggle,
+            String messageKey
+    ) {
+        if (!enabledToggle.get()) return;
         if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
-        if (!Config.GRANT_EXP_CHARM_ON_ADVANCEMENT.get()) return;
+        if (!grantToggle.get()) return;
 
-        AdvancementHolder earned = ModAdvancement.EXP_CHARM.getAdvancement(player.serverLevel());
-        AdvancementHolder rewarded = ModAdvancement.EXP_CHARM_REWARDED.getAdvancement(player.serverLevel());
+        AdvancementHolder earned = earnedAdvancement.getAdvancement(player.serverLevel());
+        AdvancementHolder rewarded = rewardedAdvancement.getAdvancement(player.serverLevel());
         if (earned == null || rewarded == null) return;
 
         if (!player.getAdvancements().getOrStartProgress(earned).isDone()) return;
@@ -46,36 +61,10 @@ public class AdvancementRewardHandler {
             player.getAdvancements().award(rewarded, criterion);
         }
 
-        ItemStack stack = new ItemStack(ModItems.EXP_CHARM);
+        ItemStack stack = new ItemStack(charmItem);
         if (!player.getInventory().add(stack)) {
             player.drop(stack, false);
         }
-        player.sendSystemMessage(
-                Component.translatable("message.cobblemoncharms.exp_charm_awarded"));
-    }
-
-    private static void tryGiveCatchCharm(ServerPlayer player) {
-        if (!Config.ENABLE_CATCH_CHARM.get()) return;
-        if (!Config.GRANT_CHARM_ON_ADVANCEMENT.get()) return;
-        if (!Config.GRANT_CATCH_CHARM_ON_ADVANCEMENT.get()) return;
-
-        AdvancementHolder earned = ModAdvancement.CATCH_CHARM.getAdvancement(player.serverLevel());
-        AdvancementHolder rewarded = ModAdvancement.CATCH_CHARM_REWARDED.getAdvancement(player.serverLevel());
-        if (earned == null || rewarded == null) return;
-
-        if (!player.getAdvancements().getOrStartProgress(earned).isDone()) return;
-        if (player.getAdvancements().getOrStartProgress(rewarded).isDone()) return;
-
-        for (String criterion : player.getAdvancements()
-                .getOrStartProgress(rewarded).getRemainingCriteria()) {
-            player.getAdvancements().award(rewarded, criterion);
-        }
-
-        ItemStack stack = new ItemStack(ModItems.CATCH_CHARM);
-        if (!player.getInventory().add(stack)) {
-            player.drop(stack, false);
-        }
-        player.sendSystemMessage(
-                Component.translatable("message.cobblemoncharms.catch_charm_awarded"));
+        player.sendSystemMessage(Component.translatable(messageKey));
     }
 }

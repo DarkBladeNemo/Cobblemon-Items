@@ -3,6 +3,7 @@ package com.darkbladenemo.cobblemoncharms.tick;
 import com.darkbladenemo.cobblemoncharms.advancement.ModAdvancement;
 import com.darkbladenemo.cobblemoncharms.common.config.Config;
 import com.darkbladenemo.cobblemoncharms.common.event.AdvancementRewardHandler;
+import com.darkbladenemo.cobblemoncharms.common.event.TypeCharmAdvancementEvents;
 import com.darkbladenemo.cobblemoncharms.init.ModItems;
 import com.darkbladenemo.cobblemoncharms.utils.AdvancementUtils;
 import com.darkbladenemo.cobblemoncharms.utils.PokedexRegionUtils;
@@ -20,6 +21,7 @@ public class HandleAdvancement {
             checkShinyCharmThreshold(player);
             checkRegionCompletions(player);
             AdvancementRewardHandler.checkRewards(player);
+            TypeCharmAdvancementEvents.checkAllTypeCharmsForPlayer(player);
         });
     }
 

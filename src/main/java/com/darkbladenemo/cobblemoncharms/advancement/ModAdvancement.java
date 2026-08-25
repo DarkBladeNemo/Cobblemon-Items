@@ -6,6 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public enum ModAdvancement {
     ROOT("root", null),
     SHINY_CHARM("dex_charm/shiny_charm", "national"),
@@ -44,6 +47,19 @@ public enum ModAdvancement {
 
     private final ResourceLocation identifier;
     private final String regionKey;
+    private static final Map<CharmType, ModAdvancement> TYPE_CHARM_LOOKUP = new EnumMap<>(CharmType.class);
+
+    static {
+        for (CharmType type : CharmType.getEntries()) {
+            String fullPath = "type_charms/" + type.getTranslationKey() + "_charm";
+            for (ModAdvancement adv : values()) {
+                if (adv.identifier.getPath().equals(fullPath)) {
+                    TYPE_CHARM_LOOKUP.put(type, adv);
+                    break;
+                }
+            }
+        }
+    }
 
     ModAdvancement(String path, String regionKey) {
         this.identifier = ResourceLocation.fromNamespaceAndPath("cobblemoncharms", path);
@@ -51,13 +67,8 @@ public enum ModAdvancement {
     }
 
     public static AdvancementHolder getTypeCharmAdvancement(MinecraftServer server, CharmType type) {
-        String fullPath = "type_charms/" + type.getTranslationKey() + "_charm";
-        for (ModAdvancement adv : values()) {
-            if (adv.identifier.getPath().equals(fullPath)) {
-                return adv.getAdvancement(server);
-            }
-        }
-        return null;
+        ModAdvancement adv = TYPE_CHARM_LOOKUP.get(type);
+        return adv == null ? null : adv.getAdvancement(server);
     }
 
     public AdvancementHolder getAdvancement(MinecraftServer server) {

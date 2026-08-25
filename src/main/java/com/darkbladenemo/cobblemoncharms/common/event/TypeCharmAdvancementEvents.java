@@ -57,7 +57,7 @@ public class TypeCharmAdvancementEvents {
         });
     }
 
-    private static void checkAllTypeCharmsForPlayer(ServerPlayer player) {
+    public static void checkAllTypeCharmsForPlayer(ServerPlayer player) {
         if (!Config.ENABLE_ALL_TYPE_CHARMS.get()) return;
         if (currentServer == null) return;
 
