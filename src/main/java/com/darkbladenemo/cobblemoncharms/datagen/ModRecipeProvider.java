@@ -87,7 +87,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('B', CobblemonItems.WATER_GEM)
                 .define('C', Items.GOLD_INGOT)
                 .define('D', Items.PRISMARINE_CRYSTALS)
-                .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(Items.DIAMOND))
+                .unlockedBy("has_water_gem", InventoryChangeTrigger.TriggerInstance.hasItems(CobblemonItems.WATER_GEM))
                 .save(withCondition(output, new ConfigCondition("enable_shiny_charm")),
                         ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/shiny_charm"));
 
@@ -100,7 +100,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('C', Items.NETHER_STAR)
                 .define('E', Items.EXPERIENCE_BOTTLE)
                 .define('D', Items.BLUE_DYE)
-                .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
+                .unlockedBy("has_nether_star", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
                 .save(withCondition(output, new ConfigCondition("enable_exp_charm")),
                         ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/exp_charm"));
 
@@ -128,7 +128,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('A', CobblemonItems.WATER_GEM)
                 .define('B', CobblemonItems.GRASS_GEM)
                 .define('D', CobblemonItems.GHOST_GEM)
-                .unlockedBy("has_diamond", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
+                .unlockedBy("has_nether_star", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
                 .save(withCondition(output, new ConfigCondition("enable_multi_charm")),
                         ResourceLocation.fromNamespaceAndPath(CobblemonCharmsMod.MOD_ID, "charms/multi_charm"));
 
@@ -144,7 +144,7 @@ public class ModRecipeProvider extends RecipeProvider {
                     .pattern("TTT")
                     .define('T', Items.GOLD_INGOT)
                     .define('G', material)
-                    .unlockedBy("has_gold", InventoryChangeTrigger.TriggerInstance.hasItems(Items.GOLD_INGOT))
+                    .unlockedBy("has_material", InventoryChangeTrigger.TriggerInstance.hasItems(material))
                     .save(withCondition(output,
                             new AndCondition(List.of(
                                     new ConfigCondition("enable_all_type_charms"),
@@ -184,7 +184,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('M', material)
                 .define('N', candyItem)
                 .define('B', CobblemonItems.ENIGMA_BERRY)
-                .unlockedBy("has_nether_star", InventoryChangeTrigger.TriggerInstance.hasItems(Items.NETHER_STAR))
+                .unlockedBy("has_material", InventoryChangeTrigger.TriggerInstance.hasItems(material))
                 .save(withCondition(output,
                         new AndCondition(List.of(
                                 new ConfigCondition("enable_all_iv_items"),
