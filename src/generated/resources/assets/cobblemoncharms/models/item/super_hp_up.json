@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "cobblemoncharms:item/super_hp_up"
-  }
-}

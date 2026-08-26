@@ -104,8 +104,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                     .define('B', CobblemonItems.WATER_GEM)
                     .define('C', Items.GOLD_INGOT)
                     .define('D', Items.PRISMARINE_CRYSTALS)
-                    .unlockedBy("has_diamond",
-                            InventoryChangeTrigger.TriggerInstance.hasItems(Items.DIAMOND))
+                    .unlockedBy("has_water_gem",
+                            InventoryChangeTrigger.TriggerInstance.hasItems(CobblemonItems.WATER_GEM))
                     .save(output, id("charms/shiny_charm"));
         }
 
@@ -179,8 +179,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("TTT")
                         .define('T', Items.GOLD_INGOT)
                         .define('G', material)
-                        .unlockedBy("has_gold",
-                                InventoryChangeTrigger.TriggerInstance.hasItems(Items.GOLD_INGOT))
+                        .unlockedBy("has_material",
+                                InventoryChangeTrigger.TriggerInstance.hasItems(material))
                         .save(output, id("charms/" + key + "_charm"));
             });
         }
