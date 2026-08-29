@@ -41,6 +41,7 @@ public class CobblemonCharmsFabric implements ModInitializer {
 
         // Register Cobblemon/Charm events
         ShinyCharmEvents.register();
+        ShinyBaitCharmEvents.register();
         ExpCharmEvents.register();
         CatchCharmEvents.register();
         AdvancementRewardHandler.register();

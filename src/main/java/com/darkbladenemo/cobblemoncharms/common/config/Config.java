@@ -87,6 +87,8 @@ public class Config {
             bool(true, "charms", "shiny_charm", "enabled");
     public static final BooleanValue SHINY_CHARM_AFFECTS_HONEY_LOG =
             bool(true, "charms", "shiny_charm", "affects_honey_log");
+    public static final BooleanValue SHINY_CHARM_AFFECTS_BAIT_AND_SNACKS =
+            bool(true, "charms", "shiny_charm", "affects_bait_and_snacks");
     public static final DoubleValue  SHINY_CHARM_MULTIPLIER =
             doubleVal(3.0, 1.0, 100.0, "charms", "shiny_charm", "multiplier");
     public static final DoubleValue  SHINY_CHARM_DEX_THRESHOLD =
