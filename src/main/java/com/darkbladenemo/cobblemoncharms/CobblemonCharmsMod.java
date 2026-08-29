@@ -49,6 +49,7 @@ public class CobblemonCharmsMod {
 
         // Register events
         ShinyCharmEvents.register();
+        ShinyBaitCharmEvents.register();
         ExpCharmEvents.register();
         CatchCharmEvents.register();
         AdvancementRewardHandler.register();
